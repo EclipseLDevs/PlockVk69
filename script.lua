@@ -1,3 +1,7 @@
+-- VKontakte UI (embedded)
+-- Source shared by araujozwx 
+-- Modificado para tema Banana Cat (amarelo sobre fundo escuro)
+
 if getgenv().Nousigi then 
 	if game.CoreGui:FindFirstChild("VKontakte GUI") then
 		for i, v in ipairs(game.CoreGui:GetChildren()) do
@@ -3840,12 +3844,11 @@ end
         -- ============================================================
         -- COMPAT LAYER: maps hub API → VKontakte UI API
         -- ============================================================
-
-        -- Track current section per tab for direct Toggle/Button/Dropdown calls
         local _curSec = nil
 
         function pagefunc:AddSection(name)
-            _curSec = pageFunction:AddSection(name or "")
+            if type(name) == "table" then name = name[1] end
+            _curSec = pageFunction:AddSection(tostring(name or ""))
             return _curSec
         end
 
@@ -3856,55 +3859,40 @@ end
             return _curSec
         end
 
-        -- Hub: Tab:AddToggle({Name=, Default=, Callback=})
-        -- UI:  sec:AddToggle(id, {Text=, Default=, Callback=})
         function pagefunc:AddToggle(setting)
             local sec = ensureSec()
-            local id = tostring(setting.Name or setting.Title or "toggle")
-            local s = {
+            local id = tostring(setting.Name or setting.Title or "t")
+            return sec:AddToggle(id, {
                 Text     = setting.Name or setting.Title or "",
-                Desc     = setting.Description or setting.Desc or nil,
+                Desc     = setting.Description or setting.Desc,
                 Default  = setting.Default,
                 Callback = setting.Callback,
-            }
-            return sec:AddToggle(id, s)
+            })
         end
 
-        -- Hub: Tab:AddButton({Name=, Description=, Callback=})
-        -- UI:  sec:AddButton({Title=, Desc=, Callback=})
         function pagefunc:AddButton(setting, cb)
             local sec = ensureSec()
-            local s = {
+            return sec:AddButton({
                 Title    = setting.Name or setting.Title or "",
-                Desc     = setting.Description or setting.Desc or nil,
+                Desc     = setting.Description or setting.Desc,
                 Callback = setting.Callback or cb or function() end,
-            }
-            return sec:AddButton(s)
+            })
         end
 
-        -- Hub: Tab:AddDropdown({Name=, Options=, Default=, Multi=, Callback=})
-        -- UI:  sec:AddDropdown(id, {Text=, Values=, Default=, Callback=})
-        -- Also adds :Refresh(newList) method to returned object
         function pagefunc:AddDropdown(setting)
             local sec = ensureSec()
-            local id = tostring(setting.Name or "dropdown")
-            local opts = setting.Options or setting.Values or {}
-            local s = {
+            local id = tostring(setting.Name or "dd")
+            local dd = sec:AddDropdown(id, {
                 Text     = setting.Name or setting.Title or "",
-                Values   = opts,
+                Values   = setting.Options or setting.Values or {},
                 Default  = setting.Default,
                 Callback = setting.Callback,
-            }
-            local dd = sec:AddDropdown(id, s)
-            -- Add :Refresh(newList, clearCurrent) stub
+            })
             if dd then
-                function dd:Refresh(newList, clearCurrent)
+                function dd:Refresh(newList, _)
                     pcall(function()
-                        -- Rebuild internal list
-                        opts = newList or {}
-                        -- Re-create via SetValue to first item
-                        if clearCurrent and #opts > 0 then
-                            self:SetValue(opts[1])
+                        if newList and #newList > 0 then
+                            self:SetValue(newList[1])
                         end
                     end)
                 end
@@ -3912,7 +3900,6 @@ end
             return dd
         end
 
-        -- Hub: Tab:AddParagraph({Title=, Desc=}) → returns obj with :SetDesc()
         function pagefunc:AddParagraph(setting)
             local sec = pageFunction:AddSection(setting.Title or "")
             local lbl = nil
@@ -3920,15 +3907,12 @@ end
             local obj = {}
             function obj:SetDesc(text)
                 pcall(function()
-                    if lbl and lbl.SetText then
-                        lbl:SetText(tostring(text))
-                    end
+                    if lbl and lbl.SetText then lbl:SetText(tostring(text)) end
                 end)
             end
             return obj
         end
 
-        -- Hub: Tab:AddTextBox(setting, cb)
         function pagefunc:AddTextBox(setting, cb)
             local sec = ensureSec()
             pcall(function()
@@ -3939,7 +3923,6 @@ end
             end)
         end
 
-        -- Hub: Tab:AddDiscordInvite({Name=, Logo=, Invite=})
         function pagefunc:AddDiscordInvite(setting)
             local sec = pageFunction:AddSection(setting.Name or "Discord")
             pcall(function()
@@ -6391,7 +6374,8 @@ QuestNeta = function()
 	local Window = Library:CreateWindow({
     Title = "VKontakte Hub",
     SubTitle = "by K 1 R $ Cat and 1x1x1x1x1x1",
-    SaveFolder = "VKontakte.json"
+    SaveFolder = "VKontakte.json",
+    Image = "rbxassetid://103324203833614"
 })
 -- [Toggle button handled by VKontakte UI]
 local Discord = Window:AddTab("Discord", "rbxassetid://73132811772878")
@@ -7034,7 +7018,7 @@ Status:AddButton({
         TPS:TeleportToPlaceInstance(_place, Server.id, plr)
     end
 })
-Farm:AddSection({"Auto Farm main"})
+Farm:AddSection("Auto Farm main")
 Farm:AddDropdown({
     Name = "Select Weapon",
     Description = "",
@@ -7630,7 +7614,7 @@ spawn(function()
         end  
     end
 end)
-Farm:AddSection({"Other"})
+Farm:AddSection("Other")
 -- Configuração da Distância Máxima (em studs)
 -- Aumente se quiser pegar mobs um pouco mais longe, diminua se quiser bem perto.
 _G.MaxFarmDistance = 325
@@ -7839,7 +7823,7 @@ spawn(function()
     end
 end)
 end
-Farm:AddSection({"Collect"})
+Farm:AddSection("Collect")
 -- Botão Auto Collect Chest
 Farm:AddToggle({
     Name = "Auto Collect Chest",
@@ -7929,7 +7913,7 @@ spawn(function()
         end
     end
 end)
-Farm:AddSection({"Material"})
+Farm:AddSection("Material")
 -- Dropdown de Selecionar Material
 Farm:AddDropdown({
 	Name = "Select Material",
@@ -8003,7 +7987,7 @@ spawn(function()
 end);
 
 if World3 then
-Farm:AddSection({"Bones"})
+Farm:AddSection("Bones")
 -- AUTO RANDOM BONES
 Farm:AddToggle({
     Name = "Auto Random Bone",
@@ -8062,7 +8046,7 @@ spawn(function()
 end)
 end
 if World3 then
-Farm:AddSection({"Dark Dragger + Valkyrie"})
+Farm:AddSection("Dark Dragger + Valkyrie")
 Farm:AddToggle({
     Name = "Auto Kill Rip Indra",
     Description = "",
@@ -8153,7 +8137,7 @@ spawn(function()
 	end;
 end);
 end
-Setting:AddSection({"Manual Save"})
+Setting:AddSection("Manual Save")
 
 Setting:AddButton({
     Name = "Salvar Configurações Agora",
@@ -8199,7 +8183,7 @@ Setting:AddButton({
         end
     end
 })
-Setting:AddSection({"Setting Farm"})
+Setting:AddSection("Setting Farm")
 Setting:AddButton({
     Name = "Stop Tween",
     Description = "",
@@ -8408,7 +8392,7 @@ spawn(function()
 		end);
 	end;
 end);
-Setting:AddSection({"Select"})
+Setting:AddSection("Select")
 Setting:AddTextBox({
     Title = "Bring Mobs Range",
     Description = "",
@@ -8446,7 +8430,7 @@ Setting:AddTextBox({
         end
     end,
 });
-Others:AddSection({"Fishing"})
+Others:AddSection("Fishing")
 -- =========================================================
 -- NOVO SISTEMA DE PESCA (COM SAVE SYSTEM INTEGRADO)
 -- =========================================================
@@ -8898,7 +8882,7 @@ end
 -- =====================
 -- UI
 -- =====================
-Others:AddSection({"Boss Farm"})
+Others:AddSection("Boss Farm")
 
 local BossDropdown = Others:AddDropdown({
     Name = "Select Boss",
@@ -9077,7 +9061,7 @@ spawn(function()
         end
     end
 end)
-Others:AddSection({"Quests"})
+Others:AddSection("Quests")
  Others:AddToggle({
     Name = "Auto Farm Observation",
     Description = "",
@@ -9329,7 +9313,7 @@ spawn(function()
 		end);
 	end;
 end);
-Others:AddSection({"Cursed Swords"});
+Others:AddSection("Cursed Swords");
 local r = Others:AddParagraph({ Title = "Elites Process ", Content = "" });
 spawn(function()
 	while wait(Sec) do
@@ -9510,7 +9494,7 @@ end);
 end
 if World2 or World3 then
 -- SECTION BUSO/AURA COLOURS
-Others:AddSection({"Buso/Aura Colours"});
+Others:AddSection("Buso/Aura Colours");
 
  Others:AddToggle({
     Name = "Teleport Barista Haki",
@@ -9668,7 +9652,7 @@ end
     end,
 })
 
-Event:AddSection({"Sea Event / Setting Sail"})
+Event:AddSection("Sea Event / Setting Sail")
 local z5 = {
         "Guardian",
         "PirateGrandBrigade",
@@ -9828,7 +9812,7 @@ task.spawn(function()
     end)
 end)
 
-Event:AddSection({"Select what you will farm."})
+Event:AddSection("Select what you will farm.")
     Event:AddToggle({
         Name = "Auto Attack Sea Beast",
         Description = "",
@@ -9847,10 +9831,10 @@ Event:AddToggle({
 });
 
 if World2 then
-  Event:AddSection({"Go to Sea 3 for more options."})
+  Event:AddSection("Go to Sea 3 for more options.")
 end
 if World1 then
-  Event:AddSection({"Go to Sea 3 or Sea 2 for Farm maritime events"})
+  Event:AddSection("Go to Sea 3 or Sea 2 for Farm maritime events")
 end
 if game.PlaceId == 7449423635 or game.PlaceId == 100117331123089 then
 Event:AddToggle({
@@ -10051,7 +10035,7 @@ task.spawn(function()
     end
 end)
 if game.PlaceId == 7449423635 or game.PlaceId == 100117331123089 then
-Event:AddSection({"Frozen Dimension"})
+Event:AddSection("Frozen Dimension")
 Event:AddButton({
 	Name = "Buy Spy",
 	Description = "Buy the spy for finding leviathan",
@@ -10094,7 +10078,7 @@ Event:AddToggle({
 		_G.Leviathan1 = I;
 	end,
 });
-Event:AddSection({"Kitsune Island / Event"});
+Event:AddSection("Kitsune Island / Event");
 Event:AddToggle({
     Name = "Auto Find Kitsune Island",
     Description = "turn on for finding & tween kitsune island",
@@ -10238,7 +10222,7 @@ Event:AddButton({ Name = "Trade Items Azure", Description = "", Callback = funct
 Event:AddButton({ Name = "Talk with kitsune statue", Description = "", Callback = function()
 		(replicated.Modules.Net:FindFirstChild("RE/TouchKitsuneStatue")):FireServer();
 	end });
-	Event:AddSection({"Mystic Island / Full Moon"});
+	Event:AddSection("Mystic Island / Full Moon");
 Event:AddToggle({
 	Name = "Auto Find Mirage Island",
     Description = "turn on for finding & tween mirage island",
@@ -10489,7 +10473,7 @@ spawn(function()
 		end;
 	end;
 end);
-	Event:AddSection({"Volcanic Magnet"});
+	Event:AddSection("Volcanic Magnet");
 -- Configurações de UI e Toggle
 Event:AddToggle({
     Name = "Auto Craft Volcanic Magnet",
@@ -10555,7 +10539,7 @@ spawn(function()
         end);
     end;
 end);
-Event:AddSection({"Prehistoric Island"});
+Event:AddSection("Prehistoric Island");
 Event:AddToggle({
     Name = "Auto Find Prehistoric Island",
     Description = "",
@@ -10953,7 +10937,7 @@ task.spawn(function()
 end)
 end
 if World2 or World3 then
-Event:AddSection({"configures skills for maritime events (Melee)"})
+Event:AddSection("configures skills for maritime events (Melee)")
 -- [[ TOGGLES MELEE ]]
 Event:AddToggle({
     Name = "Skill Z",
@@ -10985,7 +10969,7 @@ Event:AddToggle({
     end
 })
 
-Event:AddSection({"Sword"})
+Event:AddSection("Sword")
 
 -- [[ TOGGLES SWORD ]]
 Event:AddToggle({
@@ -11008,7 +10992,7 @@ Event:AddToggle({
     end
 })
 
-Event:AddSection({"Gun"})
+Event:AddSection("Gun")
 
 -- [[ TOGGLES GUN ]]
 Event:AddToggle({
@@ -11031,7 +11015,7 @@ Event:AddToggle({
     end
 })
 
-Event:AddSection({"Blox Fruit"})
+Event:AddSection("Blox Fruit")
 
 -- [[ TOGGLES BLOX FRUIT ]]
 Event:AddToggle({
@@ -11084,7 +11068,7 @@ Event:AddToggle({
     end
 })
 end
-Maestry:AddSection({"Mastery"})
+Maestry:AddSection("Mastery")
 
 local islands = { "Cake", "Bone" }
 Maestry:AddDropdown({
@@ -11312,7 +11296,7 @@ Maestry:AddToggle({
     end,
 })
 if World2 then
-Race:AddSection({"Upgrade Races"});
+Race:AddSection("Upgrade Races");
 Race:AddToggle({
     Name = "Auto Mink V2/V3",
     Description = "",
@@ -11516,13 +11500,13 @@ spawn(function()
         end);
     end;
 end)
-Race:AddSection({"Race upgrade v4 only in Sea 3"});
+Race:AddSection("Race upgrade v4 only in Sea 3");
 end
 if World1 then
-Race:AddSection({"only in Sea 2 or 3 to upgrade to Race"});
+Race:AddSection("only in Sea 2 or 3 to upgrade to Race");
 end
 if World3 then
-Race:AddSection({"Trials Quests / Misc V4"});
+Race:AddSection("Trials Quests / Misc V4");
 local K5 = Race:AddParagraph({ Title = " Tiers V4 Status ", Content = "" });
 spawn(function()
 	pcall(function()
@@ -11789,7 +11773,7 @@ spawn(function()
 end);
 end
 if World3 then
-Dojo:AddSection({"Dojo Quest & Drago Race"});
+Dojo:AddSection("Dojo Quest & Drago Race");
 Dojo:AddToggle({
 	Name = "Auto Dojo Trainer",
 	Description = "turn on for do dojo belt quest white to black",
@@ -12021,7 +12005,7 @@ spawn(function()
 		end;
 	end;
 end);
-Dojo:AddSection({"Draco Trial"});
+Dojo:AddSection("Draco Trial");
 GetQuestDracoLevel = function()
 		local I = { [1] = { NPC = "Dragon Wizard", Command = "Upgrade" } };
 		return (replicated.Modules.Net:FindFirstChild("RF/InteractDragonQuest")):InvokeServer(unpack(I));
@@ -12397,7 +12381,7 @@ spawn(function()
 end);
 end
 if World1 or World2 then
-Dojo:AddSection({"only in Sea 3"});
+Dojo:AddSection("only in Sea 3");
 end
 function isnil(I)
 	return I == nil;
@@ -12801,7 +12785,7 @@ function IslandESP_Func()
 end
 
 -- UI E TOGGLES
-Esp:AddSection({"Esp Items / Entity / Island"});
+Esp:AddSection("Esp Items / Entity / Island");
 
 Esp:AddToggle({Name = "Esp Berries", Default = false, Callback = function(I) 
     BerryEsp = I; 
@@ -12858,7 +12842,7 @@ if World3 then
 end
 
 
-Esp:AddSection({"Fontes"});
+Esp:AddSection("Fontes");
 
 local currentFont = Enum.Font.Arial -- Fonte padrão inicial
 
@@ -12999,7 +12983,7 @@ Esp:AddButton({
         ApplyGlobalFont(Enum.Font.Gotham)
     end
 })
-Esp:AddSection({"Stats"});
+Esp:AddSection("Stats");
 
 -- // AUTO STATS (Adicionado à aba VI_S conforme solicitado) // --
 
@@ -13122,7 +13106,7 @@ spawn(function()
 		end);
 	end;
 end);
-Player:AddSection({"Pvp, aimbot, movement"})
+Player:AddSection("Pvp, aimbot, movement")
 -- VARIAVEL PARA GUARDAR O MENU DE PLAYERS
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -13199,7 +13183,7 @@ Player:AddToggle({
 	end,
 });
 
-Player:AddSection({"Aimbot"});
+Player:AddSection("Aimbot");
 
 Player:AddToggle({
 	Name = "Aimbot Cam Lock",
@@ -13432,7 +13416,7 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
-Player:AddSection({"Speed/Jump"});
+Player:AddSection("Speed/Jump");
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
@@ -13531,7 +13515,7 @@ Player:AddTextBox({
         end
     end
 })
-Player:AddSection({"LocalPlayer Settings / Misc"});
+Player:AddSection("LocalPlayer Settings / Misc");
 Player:AddToggle({
 	Name = "Instance Mink V3 [ INF ]",
 	Description = "turn on for make mink v3 infinity",
@@ -13588,7 +13572,7 @@ Player:AddToggle({
 		end;
 	end,
 });
-Player:AddSection({"Settings Combat / Aimbot Settings"});
+Player:AddSection("Settings Combat / Aimbot Settings");
 Player:AddToggle({
 	Name = "Ignore Same Teams",
 	Description = "turn on for ignore not aimbot same team",
@@ -13618,7 +13602,7 @@ spawn(function()
 		end;
 	end;
 end);
-Teleport:AddSection({"Travel - Worlds"});
+Teleport:AddSection("Travel - Worlds");
 Teleport:AddButton({ Name = "Teleport Sea 1", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("TravelMain");
 	end });
@@ -13628,7 +13612,7 @@ Teleport:AddButton({ Name = "Teleport Sea 2", Description = "", Callback = funct
 Teleport:AddButton({ Name = "Teleport Sea 3", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("TravelZou");
 	end });
-Teleport:AddSection({"Travel - Island"})
+Teleport:AddSection("Travel - Island")
 
 -- Lista de Ilhas
 Location = {}
@@ -13694,7 +13678,7 @@ Teleport:AddToggle({
     end,
 })
 
-Teleport:AddSection({"Travel - Portal"});
+Teleport:AddSection("Travel - Portal");
 if World1 then
 	Location_Portal = { "Sky", "UnderWater" };
 elseif World2 then
@@ -13775,7 +13759,7 @@ spawn(function()
 	end;
 end);
 if World3 then
-Get:AddSection({"Skull Guitar"});
+Get:AddSection("Skull Guitar");
 Get:AddToggle({
 	Name = "Auto Skull Guitar",
 	Description = "",
@@ -14051,7 +14035,7 @@ spawn(function()
 	end;
 end);
 end
-Get:AddSection({"Farm Mastery"});
+Get:AddSection("Farm Mastery");
 
 local TargetMobs = {
 	"Reborn Skeleton",
@@ -14164,7 +14148,7 @@ spawn(function()
 	end
 end)
 if World3 then
-Get:AddSection({"Cursed Dual Katana"});
+Get:AddSection("Cursed Dual Katana");
 local I5 = Get:AddParagraph({ Title = " Number Cursed dual katana quests ", Content = "Quest Numbers :" });
 spawn(function()
 	while wait(.2) do
@@ -14581,7 +14565,7 @@ spawn(function()
 end);
 end
 if World2 then
-Get:AddSection({"True Triple Katana Sword"});
+Get:AddSection("True Triple Katana Sword");
 Get:AddToggle({
  Name = "Auto Buy Legendary Sword",
     Description = "",
@@ -14637,7 +14621,7 @@ spawn(function()
 	end;
 end);
 
-Get:AddSection({"Law"});
+Get:AddSection("Law");
 
 Get:AddToggle({
  Name = "Auto Law Raid",
@@ -14674,7 +14658,7 @@ spawn(function()
 end)
 end
 if World1 then
-Get:AddSection({"world 1 items"});
+Get:AddSection("world 1 items");
 Get:AddToggle({
  Name = "Auto Saw Sword",
 	Description = "",
@@ -14927,7 +14911,7 @@ spawn(function()
 end);
 end
 if World2 then
-Get:AddSection({"world 2 items"});
+Get:AddSection("world 2 items");
 Get:AddToggle({
  Name = "Auto Rengoku Sword",
     Description = "",
@@ -15186,7 +15170,7 @@ spawn(function()
 end);
 end
 if World3 then
-Get:AddSection({"Sea 3"});
+Get:AddSection("Sea 3");
 Get:AddToggle({
  Name = "Auto Canvendish Sword",
 	Description = "",
@@ -15288,7 +15272,7 @@ spawn(function()
 	end;
 end);
 end
-Fruit:AddSection({"Raiding"});
+Fruit:AddSection("Raiding");
 e = {
 		"Flame",
 		"Ice",
@@ -15390,7 +15374,7 @@ Fruit:AddToggle({
 	end
 })
 
-Fruit:AddSection({"Raid Farming"});
+Fruit:AddSection("Raid Farming");
 
 Fruit:AddToggle({
 	Name  = "Auto Start Raid",
@@ -15557,7 +15541,7 @@ spawn(function()
 		end);
 	end;
 end);
-Fruit:AddSection({"Fruits Options"});
+Fruit:AddSection("Fruits Options");
 local J5 = {};
 local function i5(I)
 	local e = tostring(I);
@@ -15735,7 +15719,7 @@ spawn(function()
 		end;
 	end;
 end);
-Setting:AddSection({"Codes"});
+Setting:AddSection("Codes");
 Setting:AddButton({
 	Name = "Redeem All Codes",
 	Description = "",
@@ -15758,14 +15742,14 @@ Setting:AddButton({
 	end,
 });
 
-Setting:AddSection({"Team"});
+Setting:AddSection("Team");
 Setting:AddButton({ Name = "Set Pirate Team", Description = "", Callback = function()
 		Pirates();
 	end });
 Setting:AddButton({ Name = "Set Marine Team", Description = "", Callback = function()
 		Marines();
 	end });
-Setting:AddSection({"Others"});
+Setting:AddSection("Others");
 HakiSt = {
 		"State 0",
 		"State 1",
@@ -15824,7 +15808,7 @@ Setting:AddToggle({
 		end;
 	end,
 });
-Setting:AddSection({"Fps"});
+Setting:AddSection("Fps");
 
 Setting:AddButton({
     Name = "Stretch the screen",

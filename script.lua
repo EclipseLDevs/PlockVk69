@@ -1,7 +1,3 @@
--- VKontakte UI (embedded)
--- Source shared by araujozwx 
--- Modificado para tema Banana Cat (amarelo sobre fundo escuro)
-
 if getgenv().Nousigi then 
 	if game.CoreGui:FindFirstChild("VKontakte GUI") then
 		for i, v in ipairs(game.CoreGui:GetChildren()) do
@@ -577,7 +573,7 @@ function Library:CreateWindow(Setting)
         getgenv().UIColor["Logo Image"] = Setting.Image
     end
     
-	local djtmemay = false
+	djtmemay = false
 	cac = false
 
 	local Main = Instance.new("Frame")
@@ -3841,6 +3837,120 @@ end
         function pagefunc:AddRightGroupbox(name)
             return pageFunction:AddSection(name)
         end
+        -- ============================================================
+        -- COMPAT LAYER: maps hub API → VKontakte UI API
+        -- ============================================================
+
+        -- Track current section per tab for direct Toggle/Button/Dropdown calls
+        local _curSec = nil
+
+        function pagefunc:AddSection(name)
+            _curSec = pageFunction:AddSection(name or "")
+            return _curSec
+        end
+
+        local function ensureSec()
+            if not _curSec then
+                _curSec = pageFunction:AddSection("")
+            end
+            return _curSec
+        end
+
+        -- Hub: Tab:AddToggle({Name=, Default=, Callback=})
+        -- UI:  sec:AddToggle(id, {Text=, Default=, Callback=})
+        function pagefunc:AddToggle(setting)
+            local sec = ensureSec()
+            local id = tostring(setting.Name or setting.Title or "toggle")
+            local s = {
+                Text     = setting.Name or setting.Title or "",
+                Desc     = setting.Description or setting.Desc or nil,
+                Default  = setting.Default,
+                Callback = setting.Callback,
+            }
+            return sec:AddToggle(id, s)
+        end
+
+        -- Hub: Tab:AddButton({Name=, Description=, Callback=})
+        -- UI:  sec:AddButton({Title=, Desc=, Callback=})
+        function pagefunc:AddButton(setting, cb)
+            local sec = ensureSec()
+            local s = {
+                Title    = setting.Name or setting.Title or "",
+                Desc     = setting.Description or setting.Desc or nil,
+                Callback = setting.Callback or cb or function() end,
+            }
+            return sec:AddButton(s)
+        end
+
+        -- Hub: Tab:AddDropdown({Name=, Options=, Default=, Multi=, Callback=})
+        -- UI:  sec:AddDropdown(id, {Text=, Values=, Default=, Callback=})
+        -- Also adds :Refresh(newList) method to returned object
+        function pagefunc:AddDropdown(setting)
+            local sec = ensureSec()
+            local id = tostring(setting.Name or "dropdown")
+            local opts = setting.Options or setting.Values or {}
+            local s = {
+                Text     = setting.Name or setting.Title or "",
+                Values   = opts,
+                Default  = setting.Default,
+                Callback = setting.Callback,
+            }
+            local dd = sec:AddDropdown(id, s)
+            -- Add :Refresh(newList, clearCurrent) stub
+            if dd then
+                function dd:Refresh(newList, clearCurrent)
+                    pcall(function()
+                        -- Rebuild internal list
+                        opts = newList or {}
+                        -- Re-create via SetValue to first item
+                        if clearCurrent and #opts > 0 then
+                            self:SetValue(opts[1])
+                        end
+                    end)
+                end
+            end
+            return dd
+        end
+
+        -- Hub: Tab:AddParagraph({Title=, Desc=}) → returns obj with :SetDesc()
+        function pagefunc:AddParagraph(setting)
+            local sec = pageFunction:AddSection(setting.Title or "")
+            local lbl = nil
+            pcall(function() lbl = sec:AddLabel(setting.Desc or "") end)
+            local obj = {}
+            function obj:SetDesc(text)
+                pcall(function()
+                    if lbl and lbl.SetText then
+                        lbl:SetText(tostring(text))
+                    end
+                end)
+            end
+            return obj
+        end
+
+        -- Hub: Tab:AddTextBox(setting, cb)
+        function pagefunc:AddTextBox(setting, cb)
+            local sec = ensureSec()
+            pcall(function()
+                sec:AddInput(tostring(setting.Name or "input"), {
+                    Name     = setting.Name or setting.Title or "",
+                    Callback = setting.Callback or cb or function() end,
+                })
+            end)
+        end
+
+        -- Hub: Tab:AddDiscordInvite({Name=, Logo=, Invite=})
+        function pagefunc:AddDiscordInvite(setting)
+            local sec = pageFunction:AddSection(setting.Name or "Discord")
+            pcall(function()
+                sec:AddButton({
+                    Title    = "📎 Entrar no Discord",
+                    Callback = function()
+                        pcall(function() setclipboard(setting.Invite or "") end)
+                    end,
+                })
+            end)
+        end
         -- Compat stubs
         function pagefunc:AddDiscordInvite(setting)
             local sec = pageFunction:AddSection(setting.Name or "Discord")
@@ -4072,19 +4182,25 @@ Lighting.FogEnd = 1e10
 do
     ply = Services.Players
     plr = ply.LocalPlayer
-    Root = plr.Character.HumanoidRootPart
+    -- Garante que o personagem está carregado antes de acessar
+    if not plr.Character or not plr.Character.Parent then
+        plr.CharacterAdded:Wait()
+    end
+    Root = plr.Character:WaitForChild("HumanoidRootPart")
     replicated = Services.ReplicatedStorage
-    Lv = plr.Data.Level.Value
+    -- Aguarda o Data carregar para evitar crash de nil
+    Lv = plr:WaitForChild("Data"):WaitForChild("Level").Value
     TeleportService = Services.TeleportService
     TW = Services.TweenService
     Lighting = Services.Lighting
-    Enemies = workspace.Enemies
+    Enemies = workspace:FindFirstChild("Enemies") or workspace:WaitForChild("Enemies")
     vim1 = Services.VirtualInputManager
     vim2 = Services.VirtualUser
     TeamSelf = plr.Team
     RunSer = Services.RunService
     Stats = Services.Stats
-    Energy = plr.Character.Energy.Value
+    local energyObj = plr.Character:FindFirstChild("Energy")
+    Energy = energyObj and energyObj.Value or 0
     
     -- Tables
     Boss = {}

@@ -3663,10 +3663,10 @@ local TeleportService = game:GetService("TeleportService")
 local plr = Players.LocalPlayer
 local ply = Players
 local replicated = ReplicatedStorage
-local Lv = plr.Data.Level.Value
+local Lv = 0
 local TW = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
-local Enemies = workspace.Enemies
+local Enemies = nil
 local vim1 = game:GetService("VirtualInputManager")
 local vim2 = game:GetService("VirtualUser")
 
@@ -3696,8 +3696,11 @@ repeat
 	loading = loading and loading:FindFirstChild("Loading")
 	task.wait()
 until game:IsLoaded() and not (loading and loading.Visible)
+pcall(function() Lv = plr.Data.Level.Value end)
+Enemies = workspace.Enemies
 
 local placeId = game.PlaceId
+task.spawn(function() while task.wait(1) do pcall(function() Lv = plr.Data.Level.Value end) end end)
 local World1, World2, World3 = false, false, false
 if placeId == 2753915549 or placeId == 85211729168715 then
 	World1 = true
@@ -5710,352 +5713,2081 @@ local function _vWalkToQuest()
 	end)
 end
 
-MainTab:AddSection("Auto Farm")
-local _selectWeaponDropdown
-_selectWeaponDropdown = MainTab:AddDropdown({
-	Title="Select Weapon",
-	Options={"Melee","Sword","Blox Fruit","Gun"},
-	CurrentOption={"Melee"},
-	Callback=function(sel)
-		_G.SelectWeapon = sel[1] or sel
-	end
-})
+function CheckQuest()
+	local I = game:GetService("Players").LocalPlayer.Data.Level.Value;
+	if World1 and I > 699 then I = 650; end;
+	if World2 and I > 1499 then I = 1450; end;
+	if World1 then
+		if I <= 9 then
+			Mon="Bandit"; LevelQuest=1; NameQuest="BanditQuest1"; NameMon="Bandit";
+			CFrameQuest=CFrame.new(1059,17,1546); CFrameMon=CFrame.new(943,45,1562);
+		elseif I<=14 then
+			Mon="Monkey"; LevelQuest=1; NameQuest="JungleQuest"; NameMon="Monkey";
+			CFrameQuest=CFrame.new(-1598,37,153); CFrameMon=CFrame.new(-1524,50,37);
+		elseif I<=29 then
+			Mon="Gorilla"; LevelQuest=2; NameQuest="JungleQuest"; NameMon="Gorilla";
+			CFrameQuest=CFrame.new(-1598,37,153); CFrameMon=CFrame.new(-1128,40,-451);
+		elseif I<=39 then
+			Mon="Pirate"; LevelQuest=1; NameQuest="BuggyQuest1"; NameMon="Pirate";
+			CFrameQuest=CFrame.new(-1140,4,3829); CFrameMon=CFrame.new(-1262,40,3905);
+		elseif I<=59 then
+			Mon="Brute"; LevelQuest=2; NameQuest="BuggyQuest1"; NameMon="Brute";
+			CFrameQuest=CFrame.new(-1140,4,3829); CFrameMon=CFrame.new(-976,55,4304);
+		elseif I<=74 then
+			Mon="Desert Bandit"; LevelQuest=1; NameQuest="DesertQuest"; NameMon="Desert Bandit";
+			CFrameQuest=CFrame.new(897,6,4389); CFrameMon=CFrame.new(924,7,4482);
+		elseif I<=89 then
+			Mon="Desert Officer"; LevelQuest=2; NameQuest="DesertQuest"; NameMon="Desert Officer";
+			CFrameQuest=CFrame.new(897,6,4389); CFrameMon=CFrame.new(1608,9,4371);
+		elseif I<=99 then
+			Mon="Snow Bandit"; LevelQuest=1; NameQuest="SnowQuest"; NameMon="Snow Bandit";
+			CFrameQuest=CFrame.new(1385,87,-1298); CFrameMon=CFrame.new(1362,120,-1531);
+		elseif I<=119 then
+			Mon="Snowman"; LevelQuest=2; NameQuest="SnowQuest"; NameMon="Snowman";
+			CFrameQuest=CFrame.new(1385,87,-1298); CFrameMon=CFrame.new(1243,140,-1437);
+		elseif I<=149 then
+			Mon="Chief Petty Officer"; LevelQuest=1; NameQuest="MarineQuest2"; NameMon="Chief Petty Officer";
+			CFrameQuest=CFrame.new(-5035,29,4326); CFrameMon=CFrame.new(-4881,23,4274);
+		elseif I<=174 then
+			Mon="Sky Bandit"; LevelQuest=1; NameQuest="SkyQuest"; NameMon="Sky Bandit";
+			CFrameQuest=CFrame.new(-4844,718,-2621); CFrameMon=CFrame.new(-4953,296,-2899);
+		elseif I<=189 then
+			Mon="Dark Master"; LevelQuest=2; NameQuest="SkyQuest"; NameMon="Dark Master";
+			CFrameQuest=CFrame.new(-4844,718,-2621); CFrameMon=CFrame.new(-5260,391,-2229);
+		elseif I<=209 then
+			Mon="Prisoner"; LevelQuest=1; NameQuest="PrisonerQuest"; NameMon="Prisoner";
+			CFrameQuest=CFrame.new(5306,2,477); CFrameMon=CFrame.new(5099,0,474);
+		elseif I<=249 then
+			Mon="Dangerous Prisoner"; LevelQuest=2; NameQuest="PrisonerQuest"; NameMon="Dangerous Prisoner";
+			CFrameQuest=CFrame.new(5306,2,477); CFrameMon=CFrame.new(5655,16,866);
+		elseif I<=274 then
+			Mon="Toga Warrior"; LevelQuest=1; NameQuest="ColosseumQuest"; NameMon="Toga Warrior";
+			CFrameQuest=CFrame.new(-1581,7,-2982); CFrameMon=CFrame.new(-1820,51,-2741);
+		elseif I<=299 then
+			Mon="Gladiator"; LevelQuest=2; NameQuest="ColosseumQuest"; NameMon="Gladiator";
+			CFrameQuest=CFrame.new(-1581,7,-2982); CFrameMon=CFrame.new(-1268,30,-2996);
+		elseif I<=324 then
+			Mon="Military Soldier"; LevelQuest=1; NameQuest="MagmaQuest"; NameMon="Military Soldier";
+			CFrameQuest=CFrame.new(-5319,12,8515); CFrameMon=CFrame.new(-5335,46,8638);
+		elseif I<=374 then
+			Mon="Military Spy"; LevelQuest=2; NameQuest="MagmaQuest"; NameMon="Military Spy";
+			CFrameQuest=CFrame.new(-5319,12,8515); CFrameMon=CFrame.new(-5803,86,8829);
+		elseif I<=399 then
+			Mon="Fishman Warrior"; LevelQuest=1; NameQuest="FishmanQuest"; NameMon="Fishman Warrior";
+			CFrameQuest=CFrame.new(61122,18,1567); CFrameMon=CFrame.new(60998,50,1534);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>10000 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(61163.85,11.67,1819.78));
+			end;
+		elseif I<=449 then
+			Mon="Fishman Commando"; LevelQuest=2; NameQuest="FishmanQuest"; NameMon="Fishman Commando";
+			CFrameQuest=CFrame.new(61122,18,1567); CFrameMon=CFrame.new(61866,55,1655);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>10000 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(61163.85,11.67,1819.78));
+			end;
+		elseif I<=474 then
+			Mon="God's Guard"; LevelQuest=1; NameQuest="SkyExp1Quest"; NameMon="God's Guard";
+			CFrameQuest=CFrame.new(-4720,846,-1951); CFrameMon=CFrame.new(-4720,846,-1951);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>10000 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(-4607.82,872.54,-1667.55));
+			end;
+		elseif I<=524 then
+			Mon="Shanda"; LevelQuest=2; NameQuest="SkyExp1Quest"; NameMon="Shanda";
+			CFrameQuest=CFrame.new(-7861,5545,-381); CFrameMon=CFrame.new(-7741,5580,-395);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>10000 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(-7894.61,5547.14,-380.29));
+			end;
+		elseif I<=549 then
+			Mon="Royal Squad"; LevelQuest=1; NameQuest="SkyExp2Quest"; NameMon="Royal Squad";
+			CFrameQuest=CFrame.new(-7903,5636,-1412); CFrameMon=CFrame.new(-7727,5650,-1410);
+		elseif I<=624 then
+			Mon="Royal Soldier"; LevelQuest=2; NameQuest="SkyExp2Quest"; NameMon="Royal Soldier";
+			CFrameQuest=CFrame.new(-7903,5636,-1412); CFrameMon=CFrame.new(-7894,5640,-1629);
+		elseif I<=649 then
+			Mon="Galley Pirate"; LevelQuest=1; NameQuest="FountainQuest"; NameMon="Galley Pirate";
+			CFrameQuest=CFrame.new(5258,39,4052); CFrameMon=CFrame.new(5391,70,4023);
+		else
+			Mon="Galley Captain"; LevelQuest=2; NameQuest="FountainQuest"; NameMon="Galley Captain";
+			CFrameQuest=CFrame.new(5258,39,4052); CFrameMon=CFrame.new(5985,70,4790);
+		end;
+	elseif World2 then
+		if I<=724 then
+			Mon="Raider"; LevelQuest=1; NameQuest="Area1Quest"; NameMon="Raider";
+			CFrameQuest=CFrame.new(-427,73,1835); CFrameMon=CFrame.new(-614,90,2240);
+		elseif I<=774 then
+			Mon="Mercenary"; LevelQuest=2; NameQuest="Area1Quest"; NameMon="Mercenary";
+			CFrameQuest=CFrame.new(-427,73,1835); CFrameMon=CFrame.new(-867,110,1621);
+		elseif I<=874 then
+			Mon="Swan Pirate"; LevelQuest=1; NameQuest="Area2Quest"; NameMon="Swan Pirate";
+			CFrameQuest=CFrame.new(635,73,919); CFrameMon=CFrame.new(635,73,919);
+		elseif I<=899 then
+			Mon="Marine Lieutenant"; LevelQuest=1; NameQuest="MarineQuest3"; NameMon="Marine Lieutenant";
+			CFrameQuest=CFrame.new(-2441,73,-3219); CFrameMon=CFrame.new(-2552,110,-3050);
+		elseif I<=949 then
+			Mon="Marine Captain"; LevelQuest=2; NameQuest="MarineQuest3"; NameMon="Marine Captain";
+			CFrameQuest=CFrame.new(-2441,73,-3219); CFrameMon=CFrame.new(-1695,110,-3299);
+		elseif I<=974 then
+			Mon="Zombie"; LevelQuest=1; NameQuest="ZombieQuest"; NameMon="Zombie";
+			CFrameQuest=CFrame.new(-5495,48,-794); CFrameMon=CFrame.new(-5715,90,-917);
+		elseif I<=999 then
+			Mon="Vampire"; LevelQuest=2; NameQuest="ZombieQuest"; NameMon="Vampire";
+			CFrameQuest=CFrame.new(-5495,48,-794); CFrameMon=CFrame.new(-6027,50,-1130);
+		elseif I<=1049 then
+			Mon="Snow Trooper"; LevelQuest=1; NameQuest="SnowMountainQuest"; NameMon="Snow Trooper";
+			CFrameQuest=CFrame.new(607,401,-5371); CFrameMon=CFrame.new(445,440,-5175);
+		elseif I<=1099 then
+			Mon="Winter Warrior"; LevelQuest=2; NameQuest="SnowMountainQuest"; NameMon="Winter Warrior";
+			CFrameQuest=CFrame.new(607,401,-5371); CFrameMon=CFrame.new(1224,460,-5332);
+		elseif I<=1124 then
+			Mon="Lab Subordinate"; LevelQuest=1; NameQuest="IceSideQuest"; NameMon="Lab Subordinate";
+			CFrameQuest=CFrame.new(-6061,16,-4904); CFrameMon=CFrame.new(-5941,50,-4322);
+		elseif I<=1174 then
+			Mon="Horned Warrior"; LevelQuest=2; NameQuest="IceSideQuest"; NameMon="Horned Warrior";
+			CFrameQuest=CFrame.new(-6061,16,-4904); CFrameMon=CFrame.new(-6306,50,-5752);
+		elseif I<=1199 then
+			Mon="Magma Ninja"; LevelQuest=1; NameQuest="FireSideQuest"; NameMon="Magma Ninja";
+			CFrameQuest=CFrame.new(-5430,16,-5298); CFrameMon=CFrame.new(-5233,60,-6227);
+		elseif I<=1249 then
+			Mon="Lava Pirate"; LevelQuest=2; NameQuest="FireSideQuest"; NameMon="Lava Pirate";
+			CFrameQuest=CFrame.new(-5430,16,-5298); CFrameMon=CFrame.new(-4955,60,-4836);
+		elseif I<=1274 then
+			Mon="Ship Deckhand"; LevelQuest=1; NameQuest="ShipQuest1"; NameMon="Ship Deckhand";
+			CFrameQuest=CFrame.new(1037,125,32911); CFrameMon=CFrame.new(1212,150,33059);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>500 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(923.21,126.97,32852.83));
+			end;
+		elseif I<=1299 then
+			Mon="Ship Engineer"; LevelQuest=2; NameQuest="ShipQuest1"; NameMon="Ship Engineer";
+			CFrameQuest=CFrame.new(1037,125,32911); CFrameMon=CFrame.new(919,43,32779);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>500 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(923.21,126.97,32852.83));
+			end;
+		elseif I<=1324 then
+			Mon="Ship Steward"; LevelQuest=1; NameQuest="ShipQuest2"; NameMon="Ship Steward";
+			CFrameQuest=CFrame.new(968,125,33244); CFrameMon=CFrame.new(919,129,33436);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>500 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(923.21,126.97,32852.83));
+			end;
+		elseif I<=1349 then
+			Mon="Ship Officer"; LevelQuest=2; NameQuest="ShipQuest2"; NameMon="Ship Officer";
+			CFrameQuest=CFrame.new(968,125,33244); CFrameMon=CFrame.new(1036,181,33315);
+			if _G.Settings.Main["Auto Farm"] and (CFrameQuest.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude>500 then
+				(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(923.21,126.97,32852.83));
+			end;
+		elseif I<=1374 then
+			Mon="Arctic Warrior"; LevelQuest=1; NameQuest="FrostQuest"; NameMon="Arctic Warrior";
+			CFrameQuest=CFrame.new(5667,26,-6486); CFrameMon=CFrame.new(5966,62,-6179);
+		elseif I<=1424 then
+			Mon="Snow Lurker"; LevelQuest=2; NameQuest="FrostQuest"; NameMon="Snow Lurker";
+			CFrameQuest=CFrame.new(5667,26,-6486); CFrameMon=CFrame.new(5407,69,-6880);
+		elseif I<=1449 then
+			Mon="Sea Soldier"; LevelQuest=1; NameQuest="ForgottenQuest"; NameMon="Sea Soldier";
+			CFrameQuest=CFrame.new(-3054,235,-10142); CFrameMon=CFrame.new(-3028,64,-9775);
+		else
+			Mon="Water Fighter"; LevelQuest=2; NameQuest="ForgottenQuest"; NameMon="Water Fighter";
+			CFrameQuest=CFrame.new(-3054,235,-10142); CFrameMon=CFrame.new(-3352,285,-10534);
+		end;
+	elseif World3 then
+		if I<=1524 then
+			Mon="Pirate Millionaire"; LevelQuest=1; NameQuest="PiratePortQuest"; NameMon="Pirate Millionaire";
+			CFrameQuest=CFrame.new(-290,42,5581); CFrameMon=CFrame.new(-245,47,5584);
+		elseif I<=1574 then
+			Mon="Pistol Billionaire"; LevelQuest=2; NameQuest="PiratePortQuest"; NameMon="Pistol Billionaire";
+			CFrameQuest=CFrame.new(-290,42,5581); CFrameMon=CFrame.new(-187,86,6013);
+		elseif I<=1599 then
+			Mon="Dragon Crew Warrior"; LevelQuest=1; NameQuest="AmazonQuest"; NameMon="Dragon Crew Warrior";
+			CFrameQuest=CFrame.new(5832,51,-1101); CFrameMon=CFrame.new(6141,51,-1340);
+		elseif I<=1624 then
+			Mon="Dragon Crew Archer"; LevelQuest=2; NameQuest="AmazonQuest"; NameMon="Dragon Crew Archer";
+			CFrameQuest=CFrame.new(5833,51,-1103); CFrameMon=CFrame.new(6616,441,446);
+		elseif I<=1649 then
+			Mon="Female Islander"; LevelQuest=1; NameQuest="AmazonQuest2"; NameMon="Female Islander";
+			CFrameQuest=CFrame.new(5446,601,749); CFrameMon=CFrame.new(4685,735,815);
+		elseif I<=1699 then
+			Mon="Giant Islander"; LevelQuest=2; NameQuest="AmazonQuest2"; NameMon="Giant Islander";
+			CFrameQuest=CFrame.new(5446,601,749); CFrameMon=CFrame.new(4729,590,-36);
+		elseif I<=1724 then
+			Mon="Marine Commodore"; LevelQuest=1; NameQuest="MarineTreeIsland"; NameMon="Marine Commodore";
+			CFrameQuest=CFrame.new(2180,27,-6741); CFrameMon=CFrame.new(2286,73,-7159);
+		elseif I<=1774 then
+			Mon="Marine Rear Admiral"; LevelQuest=2; NameQuest="MarineTreeIsland"; NameMon="Marine Rear Admiral";
+			CFrameQuest=CFrame.new(2179,28,-6740); CFrameMon=CFrame.new(3656,160,-7001);
+		elseif I<=1799 then
+			Mon="Fishman Raider"; LevelQuest=1; NameQuest="DeepForestIsland3"; NameMon="Fishman Raider";
+			CFrameQuest=CFrame.new(-10581,330,-8761); CFrameMon=CFrame.new(-10407,331,-8368);
+		elseif I<=1824 then
+			Mon="Fishman Captain"; LevelQuest=2; NameQuest="DeepForestIsland3"; NameMon="Fishman Captain";
+			CFrameQuest=CFrame.new(-10581,330,-8761); CFrameMon=CFrame.new(-10994,352,-9002);
+		elseif I<=1849 then
+			Mon="Forest Pirate"; LevelQuest=1; NameQuest="DeepForestIsland"; NameMon="Forest Pirate";
+			CFrameQuest=CFrame.new(-13234,331,-7625); CFrameMon=CFrame.new(-13274,332,-7769);
+		elseif I<=1899 then
+			Mon="Mythological Pirate"; LevelQuest=2; NameQuest="DeepForestIsland"; NameMon="Mythological Pirate";
+			CFrameQuest=CFrame.new(-13234,331,-7625); CFrameMon=CFrame.new(-13680,501,-6991);
+		elseif I<=1924 then
+			Mon="Jungle Pirate"; LevelQuest=1; NameQuest="DeepForestIsland2"; NameMon="Jungle Pirate";
+			CFrameQuest=CFrame.new(-12680,389,-9902); CFrameMon=CFrame.new(-12256,331,-10485);
+		elseif I<=1974 then
+			Mon="Musketeer Pirate"; LevelQuest=2; NameQuest="DeepForestIsland2"; NameMon="Musketeer Pirate";
+			CFrameQuest=CFrame.new(-12682,391,-9901); CFrameMon=CFrame.new(-13098,450,-9831);
+		elseif I<=1999 then
+			Mon="Reborn Skeleton"; LevelQuest=1; NameQuest="HauntedQuest1"; NameMon="Reborn Skeleton";
+			CFrameQuest=CFrame.new(-9481,142,5565); CFrameMon=CFrame.new(-8680,190,5852);
+		elseif I<=2024 then
+			Mon="Living Zombie"; LevelQuest=2; NameQuest="HauntedQuest1"; NameMon="Living Zombie";
+			CFrameQuest=CFrame.new(-9481,142,5565); CFrameMon=CFrame.new(-10144,140,5932);
+		elseif I<=2049 then
+			Mon="Demonic Soul"; LevelQuest=1; NameQuest="HauntedQuest2"; NameMon="Demonic Soul";
+			CFrameQuest=CFrame.new(-9515,172,607); CFrameMon=CFrame.new(-9275,210,6166);
+		elseif I<=2074 then
+			Mon="Posessed Mummy"; LevelQuest=2; NameQuest="HauntedQuest2"; NameMon="Posessed Mummy";
+			CFrameQuest=CFrame.new(-9515,172,607); CFrameMon=CFrame.new(-9442,60,6304);
+		elseif I<=2099 then
+			Mon="Peanut Scout"; LevelQuest=1; NameQuest="NutsIslandQuest"; NameMon="Peanut Scout";
+			CFrameQuest=CFrame.new(-2104,38,-10194); CFrameMon=CFrame.new(-1870,100,-10225);
+		elseif I<=2124 then
+			Mon="Peanut President"; LevelQuest=2; NameQuest="NutsIslandQuest"; NameMon="Peanut President";
+			CFrameQuest=CFrame.new(-2104,38,-10194); CFrameMon=CFrame.new(-2005,100,-10585);
+		elseif I<=2149 then
+			Mon="Ice Cream Chef"; LevelQuest=1; NameQuest="IceCreamIslandQuest"; NameMon="Ice Cream Chef";
+			CFrameQuest=CFrame.new(-818,66,-10964); CFrameMon=CFrame.new(-501,100,-10883);
+		elseif I<=2199 then
+			Mon="Ice Cream Commander"; LevelQuest=2; NameQuest="IceCreamIslandQuest"; NameMon="Ice Cream Commander";
+			CFrameQuest=CFrame.new(-818,66,-10964); CFrameMon=CFrame.new(-690,100,-11350);
+		elseif I<=2224 then
+			Mon="Cookie Crafter"; LevelQuest=1; NameQuest="CakeQuest1"; NameMon="Cookie Crafter";
+			CFrameQuest=CFrame.new(-2023,38,-12028); CFrameMon=CFrame.new(-2332,90,-12049);
+		elseif I<=2249 then
+			Mon="Cake Guard"; LevelQuest=2; NameQuest="CakeQuest1"; NameMon="Cake Guard";
+			CFrameQuest=CFrame.new(-2023,38,-12028); CFrameMon=CFrame.new(-1514,90,-12422);
+		elseif I<=2274 then
+			Mon="Baking Staff"; LevelQuest=1; NameQuest="CakeQuest2"; NameMon="Baking Staff";
+			CFrameQuest=CFrame.new(-1931,38,-12840); CFrameMon=CFrame.new(-1930,90,-12963);
+		elseif I<=2299 then
+			Mon="Head Baker"; LevelQuest=2; NameQuest="CakeQuest2"; NameMon="Head Baker";
+			CFrameQuest=CFrame.new(-1931,38,-12840); CFrameMon=CFrame.new(-2123,110,-12777);
+		elseif I<=2324 then
+			Mon="Cocoa Warrior"; LevelQuest=1; NameQuest="ChocQuest1"; NameMon="Cocoa Warrior";
+			CFrameQuest=CFrame.new(235,25,-12199); CFrameMon=CFrame.new(110,80,-12245);
+		elseif I<=2349 then
+			Mon="Chocolate Bar Battler"; LevelQuest=2; NameQuest="ChocQuest1"; NameMon="Chocolate Bar Battler";
+			CFrameQuest=CFrame.new(235,25,-12199); CFrameMon=CFrame.new(579,80,-12413);
+		elseif I<=2374 then
+			Mon="Sweet Thief"; LevelQuest=1; NameQuest="ChocQuest2"; NameMon="Sweet Thief";
+			CFrameQuest=CFrame.new(150,25,-12777); CFrameMon=CFrame.new(-68,80,-12692);
+		elseif I<=2399 then
+			Mon="Candy Rebel"; LevelQuest=2; NameQuest="ChocQuest2"; NameMon="Candy Rebel";
+			CFrameQuest=CFrame.new(150,25,-12777); CFrameMon=CFrame.new(17,80,-12962);
+		elseif I<=2424 then
+			Mon="Candy Pirate"; LevelQuest=1; NameQuest="CandyQuest1"; NameMon="Candy Pirate";
+			CFrameQuest=CFrame.new(-1148,14,-14446); CFrameMon=CFrame.new(-1371,70,-14405);
+		elseif I<=2449 then
+			Mon="Snow Demon"; LevelQuest=2; NameQuest="CandyQuest1"; NameMon="Snow Demon";
+			CFrameQuest=CFrame.new(-1148,14,-14446); CFrameMon=CFrame.new(-836,70,-14326);
+		elseif I<=2474 then
+			Mon="Isle Outlaw"; LevelQuest=1; NameQuest="TikiQuest1"; NameMon="Isle Outlaw";
+			CFrameQuest=CFrame.new(-16547,56,-172); CFrameMon=CFrame.new(-16431,90,-223);
+		elseif I<=2499 then
+			Mon="Island Boy"; LevelQuest=2; NameQuest="TikiQuest1"; NameMon="Island Boy";
+			CFrameQuest=CFrame.new(-16547,56,-172); CFrameMon=CFrame.new(-16668,70,-243);
+		elseif I<=2524 then
+			Mon="Sun-kissed Warrior"; LevelQuest=1; NameQuest="TikiQuest2"; NameMon="kissed";
+			CFrameQuest=CFrame.new(-16540,56,1051); CFrameMon=CFrame.new(-16345,80,1004);
+		elseif I<=2549 then
+			Mon="Isle Champion"; LevelQuest=2; NameQuest="TikiQuest2"; NameMon="Isle Champion";
+			CFrameQuest=CFrame.new(-16540,56,1051); CFrameMon=CFrame.new(-16634,85,1106);
+		elseif I<=2574 then
+			Mon="Serpent Hunter"; LevelQuest=1; NameQuest="TikiQuest3"; NameMon="Serpent Hunter";
+			CFrameQuest=CFrame.new(-16665,105,1580);
+			CFrameMon=CFrame.new(-16542.4824,146.675156,1529.61401,-0.999948919,1.0729811e-8,0.0101067368,1.0128324e-8,1,-5.9564663e-8,-0.0101067368,-5.9459257e-8,-0.999948919);
+		elseif I<=2599 then
+			Mon="Skull Slayer"; LevelQuest=2; NameQuest="TikiQuest3"; NameMon="Skull Slayer";
+			CFrameQuest=CFrame.new(-16665,105,1580);
+			CFrameMon=CFrame.new(-16849.9336,147.005066,1640.88354,0.470148534,0.491874039,-0.732816696,1.72165e-8,0.83030504,0.55730921,0.882587314,-0.262018114,0.390366673);
+		elseif I<=2624 then
+			Mon="Reef Bandit"; LevelQuest=1; NameQuest="SubmergedQuest1"; NameMon="Reef Bandit";
+			CFrameQuest=CFrame.new(10882.264,-2086.322,10034.226);
+			CFrameMon=CFrame.new(10736.6191,-2087.8439,9338.4882);
+		elseif I<=2649 then
+			Mon="Coral Pirate"; LevelQuest=2; NameQuest="SubmergedQuest1"; NameMon="Coral Pirate";
+			CFrameQuest=CFrame.new(10882.264,-2086.322,10034.226);
+			CFrameMon=CFrame.new(10965.1025,-2158.8842,9177.2597);
+		elseif I<=2674 then
+			Mon="Sea Chanter"; LevelQuest=1; NameQuest="SubmergedQuest2"; NameMon="Sea Chanter";
+			CFrameQuest=CFrame.new(10882.264,-2086.322,10034.226);
+			CFrameMon=CFrame.new(10621.0342,-2087.8440,10102.0332);
+		elseif I<=2699 then
+			Mon="Ocean Prophet"; LevelQuest=2; NameQuest="SubmergedQuest2"; NameMon="Ocean Prophet";
+			CFrameQuest=CFrame.new(10882.264,-2086.322,10034.226);
+			CFrameMon=CFrame.new(11056.1445,-2001.6717,10117.4493);
+		elseif I<=2724 then
+			Mon="High Disciple"; LevelQuest=1; NameQuest="SubmergedQuest3"; NameMon="High Disciple";
+			CFrameQuest=CFrame.new(9636.52441,-1992.19507,9609.52832);
+			CFrameMon=CFrame.new(9828.087890625,-1940.908935546875,9693.0634765625);
+		else
+			Mon="Grand Devotee"; LevelQuest=2; NameQuest="SubmergedQuest3"; NameMon="Grand Devotee";
+			CFrameQuest=CFrame.new(9636.52441,-1992.19507,9609.52832);
+			CFrameMon=CFrame.new(9557.5849609375,-1928.0404052734375,9859.1826171875);
+		end;
+	end;
+	Qdata=LevelQuest; Qname=NameQuest; PosQ=CFrameQuest; PosM=CFrameMon; MonFarm=Mon;
+end;
+
+
+MainSection = MainTab:AddSection("Main");
+GameTimeParagraph = MainTab:AddParagraph({
+	Title = "Game Time",
+	Desc = "0",
+	Image = "timer",
+	ImageSize = 20
+});
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			local GameTime = math.floor(workspace.DistributedGameTime + 0.5);
+			local Hour = math.floor(GameTime / 60 ^ 2) % 24;
+			local Minute = math.floor(GameTime / 60 ^ 1) % 60;
+			local Second = math.floor(GameTime / 60 ^ 0) % 60;
+			GameTimeParagraph:SetDesc(Hour .. " Hours " .. Minute .. " Minute " .. Second .. " Second");
+		end);
+	end;
+end);
+LevelFarmSection = MainTab:AddSection(" Level Farm");
+
+local function QuestNeta()
+	CheckQuest();
+	return {
+		[1] = Mon,
+		[2] = Qdata,
+		[3] = Qname,
+		[4] = PosM or CFrameMon,
+		[5] = NameMon,
+		[6] = PosQ,
+	};
+end;
+
+_G.EclipseFarmMode    = "Level";
+_G.EclipseStartFarm   = false;
+_G.EclipseLevel       = false;
+_G.EclipseFarm_Bone   = false;
+_G.EclipseFarm_Cake   = false;
+_G.EclipseAutoTyrant  = false;
+_G.EclipseAcceptQuest = false;
+
+local FARM_HEIGHT          = 45;
+local TP_DIST_THRESHOLD    = 15;
+
+local function TpConditional(hrp, targetCF, threshold)
+	if not hrp or not targetCF then return; end;
+	if (targetCF.Position - hrp.Position).Magnitude > threshold then
+		TweenPlayer(targetCF);
+	end;
+end;
 
 MainTab:AddDropdown({
-	Title="Select Boss",
-	Options=Boss,
-	CurrentOption={Boss[1] or ""},
-	Callback=function(sel)
-		_G.FindBoss = sel[1] or sel
+	Title = "Select Farm Mode",
+	Desc = "Level = por quest/level | Bone = Haunted Castle | Cake Prince | Tyrant Of The Skies | Nearest = ataca NPCs proximos",
+	Values = {"Level", "Bone", "Cake Prince", "Tyrant Of The Skies", "Nearest"},
+	Value = "Level",
+	Callback = function(v)
+		_G.EclipseFarmMode = v;
 	end
-})
-
-MainTab:AddToggle({
-	Title="Auto Farm Level",
-	Desc="Farm mobs por quest automaticamente",
-	Value=false,
-	Callback=function(state)
-		_G.Level = state
-	end
-})
+});
 
 task.spawn(function()
-	while task.wait(0.1) do
+	while task.wait(0.3) do
 		pcall(function()
-			if not _G.Level then return end
-			if not plr.Character or not plr.Character:FindFirstChild("HumanoidRootPart") then return end
-			local qv = plr.PlayerGui.Main.Quest.Visible
-			if not qv then
-				_vWalkToQuest()
-			else
-				local mob = GetConnectionEnemies(MonFarm)
-				if mob then
-					repeat task.wait()
-						G.Kill(mob,_G.Level)
-					until not _G.Level or not mob.Parent or mob.Humanoid.Health <= 0
-				else
-					if CFrameMon then _tp(CFrameMon) end
-				end
-			end
-		end)
-	end
-end)
+			local tooltip = (_G.ChooseWP == "Fruit") and "Blox Fruit" or (_G.ChooseWP or "Melee");
+			for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+				if v.ToolTip == tooltip then
+					_G.Settings.Main["Selected Weapon"] = v.Name;
+					_G.SelectWeapon = v.Name;
+				end;
+			end;
+		end);
+	end;
+end);
 
 MainTab:AddToggle({
-	Title="Auto Farm Boss",
-	Desc="Farm o boss selecionado",
-	Value=false,
-	Callback=function(state)
-		_G.AutoFarmBoss = state
+	Title = "Accept Quests",
+	Desc = "Aceita quest automaticamente antes de farmar",
+	Value = false,
+	Callback = function(v)
+		_G.EclipseAcceptQuest = v;
 	end
-})
+});
 
+AutoLevelFarmToggle = MainTab:AddToggle({
+	Title = "Start Farm",
+	Desc = "Inicia o modo de farm selecionado",
+	Value = _G.Settings.Main["Auto Farm"],
+	Callback = function(v)
+		_G.EclipseStartFarm = v;
+		_G.Settings.Main["Auto Farm"] = v;
+		_G.EclipseLevel      = false;
+		_G.EclipseFarm_Bone  = false;
+		_G.EclipseFarm_Cake  = false;
+		_G.EclipseAutoTyrant = false;
+		_G.EclipseFarm_Nearest = false;
+		if v then
+			if _G.EclipseFarmMode == "Level" then
+				_G.EclipseLevel = true;
+			elseif _G.EclipseFarmMode == "Bone" then
+				_G.EclipseFarm_Bone = true;
+			elseif _G.EclipseFarmMode == "Cake Prince" then
+				_G.EclipseFarm_Cake = true;
+			elseif _G.EclipseFarmMode == "Tyrant Of The Skies" then
+				_G.EclipseAutoTyrant = true;
+			elseif _G.EclipseFarmMode == "Nearest" then
+				_G.EclipseFarm_Nearest = true;
+			end;
+		end;
+		StopTween(_G.EclipseStartFarm);
+		(getgenv()).SaveSetting();
+	end
+});
+
+_G.EclipseFarm_Nearest = false;
+_G.NearestFarmRadius = 150;
 task.spawn(function()
-	while task.wait(0.1) do
+	while task.wait(0.15) do
+		if not _G.EclipseFarm_Nearest or not _G.EclipseStartFarm then task.wait(0.3); continue; end;
+		task.wait(0.1);
 		pcall(function()
-			if not _G.AutoFarmBoss or not _G.FindBoss then return end
-			local mob = GetConnectionEnemies(_G.FindBoss)
-			if mob then
-				repeat task.wait()
-					G.Kill(mob,_G.AutoFarmBoss)
-				until not _G.AutoFarmBoss or not mob.Parent or mob.Humanoid.Health <= 0
-			else
-				if PosB then _tp(PosB) end
-			end
-		end)
-	end
-end)
-
-MainTab:AddToggle({
-	Title="Kill Mobs Nearest",
-	Desc="Mata o mob mais proximo automaticamente",
-	Value=GetSetting("AutoFarmNear_Save",false),
-	Callback=function(I)
-		_G.AutoFarmNear = I
-		_G.SaveData["AutoFarmNear_Save"] = I
-		SaveSettings()
-	end
-})
-
-task.spawn(function()
-	while task.wait() do
-		pcall(function()
-			if not _G.AutoFarmNear then return end
-			local char = plr.Character or plr.CharacterAdded:Wait()
-			local Root2 = char:FindFirstChild("HumanoidRootPart")
-			if not Root2 then return end
-			local ClosestEnemy, ShortestDistance = nil, math.huge
-			if workspace:FindFirstChild("Enemies") then
-				for _, e in pairs(workspace.Enemies:GetChildren()) do
-					if e:FindFirstChild("Humanoid") and e:FindFirstChild("HumanoidRootPart") and e.Humanoid.Health > 0 then
-						local dist = (Root2.Position - e.HumanoidRootPart.Position).Magnitude
-						if dist < ShortestDistance then ShortestDistance = dist; ClosestEnemy = e end
-					end
-				end
-			end
-			if ClosestEnemy then
-				repeat task.wait()
-					G.Kill(ClosestEnemy,_G.AutoFarmNear)
-				until not _G.AutoFarmNear or not ClosestEnemy.Parent
-					or (ClosestEnemy:FindFirstChild("Humanoid") and ClosestEnemy.Humanoid.Health <= 0)
-					or not Root2.Parent
-			end
-		end)
-	end
-end)
-
-if World2 then
-MainTab:AddToggle({
-	Title="Auto Factory Raid",
-	Value=GetSetting("AutoFactory_Save",false),
-	Callback=function(Value)
-		_G.AutoFactory = Value
-		_G.SaveData["AutoFactory_Save"] = Value
-		SaveSettings()
-	end
-})
-
-task.spawn(function()
-	local FactoryPos = CFrame.new(448.46756,199.356781,-441.389252)
-	while task.wait(0.5) do
-		pcall(function()
-			if not _G.AutoFactory then return end
-			local Core = GetConnectionEnemies("Core")
-			if Core and Core:FindFirstChild("Humanoid") and Core.Humanoid.Health > 0 then
-				repeat task.wait()
-					if not _G.AutoFactory then break end
-					if not Core or not Core.Parent then break end
-					if Core.Humanoid.Health <= 0 then break end
-					if _G.SelectWeapon then EquipWeapon(_G.SelectWeapon) end
-					_tp(FactoryPos)
-				until Core.Humanoid.Health <= 0 or not _G.AutoFactory
-			else
-				_tp(FactoryPos)
-			end
-		end)
-	end
-end)
-end
-
-if World3 then
-MainTab:AddToggle({
-	Title="Auto Pirate Raid",
-	Value=GetSetting("AutoRaidCastle_Save",false),
-	Callback=function(I)
-		_G.AutoRaidCastle = I
-		_G.SaveData["AutoRaidCastle_Save"] = I
-		SaveSettings()
-	end
-})
-
-task.spawn(function()
-	while task.wait(0.5) do
-		if _G.AutoRaidCastle then
+			local plr  = game.Players.LocalPlayer;
+			local char = plr.Character;
+			if not char then return; end;
+			local hrp = char:FindFirstChild("HumanoidRootPart");
+			if not hrp then return; end;
+			local radius = _G.NearestFarmRadius or 300;
+			local closest, closestDist = nil, math.huge;
+			for _, v in pairs(workspace.Enemies:GetChildren()) do
+				if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+					local d = (v.HumanoidRootPart.Position - hrp.Position).Magnitude;
+					if d < closestDist and d <= radius then
+						closestDist = d;
+						closest = v;
+					end;
+				end;
+			end;
+			if not closest then return; end;
+			PosMon  = closest.HumanoidRootPart.Position;
+			MonFarm = nil;
+			_B = true;
+			BringEnemy();
+			EquipWeapon(_G.Settings.Main["Selected Weapon"] or _G.SelectWeapon);
+			AutoHaki();
+			local dist = (closest.HumanoidRootPart.Position - hrp.Position).Magnitude;
+			if dist > 8 then
+				TweenPlayer(closest.HumanoidRootPart.CFrame * CFrame.new(0, _G.MobHeight or 15, 0));
+			end;
 			pcall(function()
-				local TargetCFrame = CFrame.new(-5496.17432,313.768921,-2841.53027)
-				local CheckCFrame = CFrame.new(-5539.3115234375,313.80053710938,-2972.3723144531)
-				if (CheckCFrame.Position - plr.Character.HumanoidRootPart.Position).Magnitude <= 500 then
-					for _, e in pairs(workspace.Enemies:GetChildren()) do
-						if e:FindFirstChild("HumanoidRootPart") and e:FindFirstChild("Humanoid") and e.Humanoid.Health > 0 then
-							if (e.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude <= 2000 then
-								repeat task.wait()
-									G.Kill(e,_G.AutoRaidCastle)
-								until not _G.AutoRaidCastle or not e.Parent or e.Humanoid.Health <= 0
-							end
-						end
-					end
-				else
-					_tp(TargetCFrame)
-				end
-			end)
-		end
-	end
-end)
-end
-
-MainTab:AddSection("Collect")
-MainTab:AddToggle({
-	Title="Auto Collect Chest",
-	Value=GetSetting("AutoFarmChest_Save",false),
-	Callback=function(I)
-		_G.AutoFarmChest = I
-		_G.SaveData["AutoFarmChest_Save"] = I
-		SaveSettings()
-	end
-})
-
-task.spawn(function()
-	while task.wait(0.5) do
-		if _G.AutoFarmChest then
+				if closest.Humanoid then closest.Humanoid.WalkSpeed = 0; end;
+				closest.HumanoidRootPart.CanCollide = false;
+				closest.HumanoidRootPart.Size = Vector3.new(1,1,1);
+			end);
+			pcall(function() sethiddenproperty(plr, "SimulationRadius", math.huge); end);
+			Attack();
 			pcall(function()
-				local plrChar = plr.Character or plr.CharacterAdded:Wait()
-				local d = plrChar:GetPivot().Position
-				local Chests = CollectionService:GetTagged("_ChestTagged")
-				local minDist, nearestChest = math.huge, nil
-				for _, chest in pairs(Chests) do
-					local dist = (chest:GetPivot().Position - d).Magnitude
-					if not chest:GetAttribute("IsDisabled") and dist < minDist then
-						minDist = dist; nearestChest = chest
-					end
-				end
-				if nearestChest then _tp(nearestChest:GetPivot()) end
-			end)
-		end
-	end
-end)
-
-MainTab:AddToggle({
-	Title="Auto Collect Berry",
-	Value=GetSetting("AutoBerry_Save",false),
-	Callback=function(I)
-		_G.AutoBerry = I
-		_G.SaveData["AutoBerry_Save"] = I
-		SaveSettings()
-	end
-})
+				local head = closest:FindFirstChild("Head") or closest:FindFirstChild("HumanoidRootPart");
+				AttackModule:AttackEnemy(head, {});
+			end);
+		end);
+	end;
+end);
 
 task.spawn(function()
-	while task.wait(0.5) do
-		if _G.AutoBerry then
-			local n = CollectionService:GetTagged("BerryBush")
-			for i = 1, #n do
-				local e = n[i]
-				for _, K in pairs(e:GetAttributes()) do
-					_tp(e.Parent:GetPivot())
-					for j = 1, #n do
-						local e2 = n[j]
-						for _, e3 in pairs(e2:GetChildren()) do
-							pcall(function()
-								_tp(e3.WorldPivot)
-								fireproximityprompt(e3.ProximityPrompt, math.huge)
-							end)
-						end
-					end
-				end
-			end
-		end
-	end
-end)
-
-MainTab:AddSection("Materials")
-local MatDropdown = MainTab:AddDropdown({
-	Title="Select Material",
-	Options=MaterialList,
-	CurrentOption={},
-	Callback=function(sel)
-		SelectMaterial = sel[1] or sel
-		_G.SaveData["SelectMaterial_Save"] = SelectMaterial
-		SaveSettings()
-	end
-})
-
-MainTab:AddToggle({
-	Title="Auto Farm Material",
-	Value=GetSetting("AutoMaterial_Save",false),
-	Callback=function(I)
-		getgenv().AutoMaterial = I
-		_G.SaveData["AutoMaterial_Save"] = I
-		SaveSettings()
-	end
-})
-
-task.spawn(function()
-	while task.wait() do
-		if getgenv().AutoMaterial then
+	while task.wait(0.2) do
+		if _G.EclipseLevel and _G.EclipseStartFarm then
 			pcall(function()
-				if SelectMaterial then
-					MaterialMon(SelectMaterial)
-					_tp(MPos)
-				end
-				for _, K in ipairs(MMon or {}) do
-					for _, n in pairs(workspace.Enemies:GetChildren()) do
-						if n:FindFirstChild("Humanoid") and n:FindFirstChild("HumanoidRootPart") and n.Humanoid.Health > 0 then
-							if n.Name == K then
-								repeat task.wait()
-									G.Kill(n,getgenv().AutoMaterial)
-								until not getgenv().AutoMaterial or not n.Parent or n.Humanoid.Health <= 0
-							end
-						end
-					end
-				end
-			end)
-		end
-	end
-end)
-
-if World3 then
-MainTab:AddSection("Bones")
-MainTab:AddToggle({
-	Title="Auto Random Bone",
-	Value=false,
-	Callback=function(v)
-		_G.Auto_Random_Bone = v
-	end
-})
-
-task.spawn(function()
-	while task.wait(0.5) do
-		if _G.Auto_Random_Bone then
-			replicated.Remotes.CommF_:InvokeServer("Bones","Buy",1,1)
-		end
-	end
-end)
-
-MainTab:AddToggle({
-	Title="Auto Soul Reaper",
-	Value=false,
-	Callback=function(v)
-		_G.AutoHytHallow = v
-	end
-})
-
-task.spawn(function()
-	while task.wait(0.5) do
-		if _G.AutoHytHallow then
-			pcall(function()
-				local mob = GetConnectionEnemies("Soul Reaper")
-				if mob then
-					repeat task.wait()
-						G.Kill(mob,_G.AutoHytHallow)
-					until mob.Humanoid.Health <= 0 or not _G.AutoHytHallow
-				else
-					if not GetBP("Hallow Essence") then
-						repeat task.wait(0.1)
-							replicated.Remotes.CommF_:InvokeServer("Bones","Buy",1,1)
-						until not _G.AutoHytHallow or GetBP("Hallow Essence")
+				CheckQuest();
+				local plr = game:GetService("Players").LocalPlayer;
+				local _playerLevel = 0;
+				pcall(function() _playerLevel = plr.Data.Level.Value; end);
+				local _isSubQuest = LevelQuest and NameQuest and string.find(tostring(NameQuest or ""), "Submerged");
+				if _isSubQuest or _playerLevel >= 2600 then
+					local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart");
+					if not hrp then return; end;
+					if hrp.Position.Y > -200 then
+						if _G._subEntering then return; end;
+						_G._subEntering = true;
+						local SubWorkerCF = CFrame.new(-16417.6, 74.26, 1811.3);
+						TweenPlayer(SubWorkerCF);
+						local t = 0;
+						repeat
+							task.wait(0.2); t = t + 0.2;
+							hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart");
+							if not hrp then _G._subEntering = false; return; end;
+						until (hrp.Position - SubWorkerCF.Position).Magnitude < 15 or t > 25;
+						task.wait(0.5);
+						pcall(function()
+							(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("NPC", "Submarine Worker");
+						end);
+						task.wait(0.5);
+						pcall(function()
+							game:GetService("ReplicatedStorage").Modules.Net["RF/SubmarineWorkerSpeak"]:InvokeServer("TravelToSubmergedIsland");
+						end);
+						t = 0;
+						repeat
+							task.wait(0.3); t = t + 0.3;
+							hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart");
+						until (hrp and hrp.Position.Y < -200) or t > 20;
+						task.wait(1);
+						_G._subEntering = false;
+						return;
+					end;
+				end;
+				local ok, QuestTitle = pcall(function()
+					return plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text;
+				end);
+				if ok and QuestTitle and not string.find(QuestTitle, NameMon or "") then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("AbandonQuest");
+				end;
+				if (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+					TweenPlayer(CFrameQuest);
+					task.wait(0.5);
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest);
+				elseif (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+					if (game:GetService("Workspace")).Enemies:FindFirstChild(Mon) then
+						local bestMob = nil;
+						local bestDist = math.huge;
+						local myHRP = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart");
+						for _, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v.Name == Mon and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+								local d = myHRP and (v.HumanoidRootPart.Position - myHRP.Position).Magnitude or 0;
+								if d < bestDist then bestDist = d; bestMob = v; end;
+							end;
+						end;
+						if bestMob then
+							local v = bestMob;
+							if string.find((game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) then
+								PosMon  = v.HumanoidRootPart.Position;
+								MonFarm = v.Name;
+								BringEnemy();
+								local myH = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart");
+								if myH then
+									local dMob = (v.HumanoidRootPart.Position - myH.Position).Magnitude;
+									if dMob > 8 then
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									end;
+								end;
+								repeat
+									task.wait(0.15);
+									EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+									AutoHaki();
+									PosMon  = v.HumanoidRootPart.Position;
+									MonFarm = v.Name;
+									pcall(function() v.Humanoid.WalkSpeed = 0; v.HumanoidRootPart.Size = Vector3.new(1,1,1); v.HumanoidRootPart.CanCollide = false; end);
+									Attack();
+								until not _G.EclipseStartFarm or not _G.EclipseLevel or v.Humanoid.Health <= 0 or (not v.Parent) or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false;
+							end;
+						end;
 					else
-						local pos = CFrame.new(-8932.32,146.83,6062.55)
-						repeat task.wait(0.1)
-							_tp(pos)
-						until not _G.AutoHytHallow
-						EquipWeapon("Hallow Essence")
-					end
-				end
-			end)
-		end
+						TweenPlayer(CFrameMon);
+						UnEquipWeapon(_G.Settings.Main["Selected Weapon"]);
+					end;
+				end;
+			end);
+		end;
+	end;
+end);
+
+
+task.spawn(function()
+	while task.wait(0.15) do
+		if not (_G.EclipseFarm_Bone and _G.EclipseStartFarm) then continue; end;
+		pcall(function()
+			local plr = game.Players.LocalPlayer;
+			local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart");
+			if not hrp then return; end;
+			local QuestUI  = plr.PlayerGui.Main.Quest;
+			local MOBS     = {"Reborn Skeleton","Living Zombie","Demonic Soul","Posessed Mummy"};
+			local npcPos   = CFrame.new(-9516.99, 172.01, 6078.46);
+			if _G.EclipseAcceptQuest and not QuestUI.Visible then
+				if (npcPos.Position - hrp.Position).Magnitude > 5 then
+					TweenPlayer(npcPos);
+					local t = 0;
+					repeat task.wait(0.1); t = t + 0.1;
+					until (npcPos.Position - hrp.Position).Magnitude <= 5 or t > 8 or not _G.EclipseFarm_Bone;
+				else
+					local quests = {
+						{"StartQuest","HauntedQuest1",1},{"StartQuest","HauntedQuest1",2},
+						{"StartQuest","HauntedQuest2",1},{"StartQuest","HauntedQuest2",2}
+					};
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer(
+						unpack(quests[math.random(1,#quests)])
+					);
+					task.wait(1);
+				end;
+				return;
+			end;
+			local closest, shortest = nil, math.huge;
+			for _, mobName in pairs(MOBS) do
+				for _, mob in pairs(workspace.Enemies:GetChildren()) do
+					if mob.Name == mobName and mob:FindFirstChild("Humanoid")
+					   and mob.Humanoid.Health > 0 and mob.PrimaryPart then
+						local dist = (mob.PrimaryPart.Position - hrp.Position).Magnitude;
+						if dist < shortest then shortest = dist; closest = mob; end;
+					end;
+				end;
+			end;
+			if closest then
+				local targetCF = closest.PrimaryPart.CFrame * Pos;
+				if (targetCF.Position - hrp.Position).Magnitude > 8 then
+					TweenPlayer(targetCF);
+					local t = 0;
+					repeat task.wait(0.05); t = t + 0.05;
+					until (closest.PrimaryPart.Position - hrp.Position).Magnitude <= 25
+						or t > 5
+						or not (closest.Parent and closest:FindFirstChild("Humanoid") and closest.Humanoid.Health > 0)
+						or not _G.EclipseFarm_Bone;
+				end;
+				EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+				if closest.Parent and closest:FindFirstChild("Humanoid") and closest.Humanoid.Health > 0 then
+					PosMon  = closest.PrimaryPart.Position;
+					MonFarm = closest.Name;
+					_B = true; BringEnemy();
+					G.Kill(closest, true);
+				end;
+			else
+				local spawnCF = CFrame.new(-9495.68, 453.58, 5977.34);
+				if (spawnCF.Position - hrp.Position).Magnitude > 20 then
+					TweenPlayer(spawnCF);
+					local t = 0;
+					repeat task.wait(0.1); t = t + 0.1;
+					until (spawnCF.Position - hrp.Position).Magnitude <= 20 or t > 10 or not _G.EclipseFarm_Bone;
+				end;
+			end;
+		end);
+	end;
+end);
+
+task.spawn(function()
+	while task.wait(0.15) do
+		if not (_G.EclipseFarm_Cake and _G.EclipseStartFarm) then continue; end;
+		pcall(function()
+			local plr     = game.Players.LocalPlayer;
+			local hrp     = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart");
+			if not hrp then return; end;
+			local enemies = workspace:FindFirstChild("Enemies");
+			if not enemies then return; end;
+			local CakePos       = CFrame.new(-2091.91, 70.00, -12142.83);
+			local PortalEntrance= CFrame.new(-2151.82, 149.32, -12404.91);
+			local mirror        = workspace.Map:FindFirstChild("CakeLoaf");
+			mirror = mirror and mirror:FindFirstChild("BigMirror");
+			local other         = mirror and mirror:FindFirstChild("Other");
+			local portalOpen    = other and other.Transparency == 0;
+			local boss          = enemies:FindFirstChild("Cake Prince") or enemies:FindFirstChild("Dough King");
+			if not boss and not portalOpen
+			   and (hrp.Position - CakePos.Position).Magnitude > 3000 then
+				TweenPlayer(CakePos);
+				local t = 0;
+				repeat task.wait(0.1); t = t + 0.1;
+				until (hrp.Position - CakePos.Position).Magnitude <= 3000 or t > 15 or not _G.EclipseFarm_Cake;
+				return;
+			end;
+			if boss or portalOpen then
+				if boss and boss:FindFirstChild("Humanoid") and boss.Humanoid.Health > 0 and boss.PrimaryPart then
+					local bossTarget = boss.PrimaryPart.CFrame * CFrame.new(0, 25, 0);
+					if (bossTarget.Position - hrp.Position).Magnitude > 8 then
+						TweenPlayer(bossTarget);
+						local t = 0;
+						repeat task.wait(0.05); t = t + 0.05;
+						until (bossTarget.Position - hrp.Position).Magnitude <= 30 or t > 6 or not _G.EclipseFarm_Cake;
+					end;
+					EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+					G.Kill(boss, true);
+					return;
+				end;
+				if (hrp.Position - PortalEntrance.Position).Magnitude < 500 then
+					TpConditional(hrp, PortalEntrance, TP_DIST_THRESHOLD);
+				end;
+				return;
+			end;
+			local CAKE_MOBS = {"Cookie Crafter","Cake Guard","Baking Staff","Head Baker"};
+			if _G.EclipseAcceptQuest and not plr.PlayerGui.Main.Quest.Visible then
+				local questPos = CFrame.new(-1927.92, 37.80, -12842.54);
+				TpConditional(hrp, questPos, TP_DIST_THRESHOLD);
+				if (hrp.Position - questPos.Position).Magnitude <= 40 then
+					local q = {
+						{"StartQuest","CakeQuest2",2},{"StartQuest","CakeQuest2",1},
+						{"StartQuest","CakeQuest1",1},{"StartQuest","CakeQuest1",2}
+					};
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer(
+						unpack(q[math.random(1,4)])
+					);
+				end;
+				return;
+			end;
+			local bestMob, bestDist = nil, math.huge;
+			for _, mob in ipairs(enemies:GetChildren()) do
+				if table.find(CAKE_MOBS, mob.Name) and mob:FindFirstChild("Humanoid")
+				   and mob.Humanoid.Health > 0 then
+					local dist = (mob.HumanoidRootPart.Position - hrp.Position).Magnitude;
+					if dist < bestDist then bestDist = dist; bestMob = mob; end;
+				end;
+			end;
+			if bestMob then
+				local mobTarget = bestMob.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0);
+				if (mobTarget.Position - hrp.Position).Magnitude > 8 then
+					TweenPlayer(mobTarget);
+					local t = 0;
+					repeat task.wait(0.05); t = t + 0.05;
+					until (bestMob.HumanoidRootPart.Position - hrp.Position).Magnitude <= 25
+						or t > 5
+						or not (bestMob.Parent and bestMob.Humanoid.Health > 0)
+						or enemies:FindFirstChild("Cake Prince")
+						or not _G.EclipseFarm_Cake;
+				end;
+				if bestMob.Parent and bestMob.Humanoid.Health > 0 then
+					EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+					G.Kill(bestMob, true);
+				end;
+			else
+				TpConditional(hrp, CFrame.new(-1927.92, 37.80, -12842.54), TP_DIST_THRESHOLD);
+			end;
+		end);
+	end;
+end);
+
+
+task.spawn(function()
+	game:GetService("RunService").Stepped:Connect(function()
+		if _G.EclipseAutoTyrant and _G.EclipseStartFarm then
+			local char = game.Players.LocalPlayer.Character;
+			if char then
+				for _, part in pairs(char:GetDescendants()) do
+					if part:IsA("BasePart") and part.CanCollide then
+						part.CanCollide = false;
+					end;
+				end;
+				if char:FindFirstChild("Humanoid") then
+					char.Humanoid.AutoRotate = true;
+					char.Humanoid:ChangeState(11);
+				end;
+			end;
+		end;
+	end);
+end);
+
+_G.TyrantKillCount = 0;
+local _tyrantKillLabel = nil;
+task.spawn(function()
+	while true do
+		task.wait(2);
+		if _tyrantKillLabel and _tyrantKillLabel.SetDesc then
+			pcall(function() _tyrantKillLabel:SetDesc(tostring(_G.TyrantKillCount) .. " / 400 NPCs derrotados"); end);
+		end;
+	end;
+end);
+
+local function HasSkullGuitar()
+	local plr = game.Players.LocalPlayer;
+	for _, v in pairs(plr.Backpack:GetChildren()) do
+		if v:IsA("Tool") and v.Name:lower():find("skull guitar") then return true; end;
+	end;
+	if plr.Character then
+		for _, v in pairs(plr.Character:GetChildren()) do
+			if v:IsA("Tool") and v.Name:lower():find("skull guitar") then return true; end;
+		end;
+	end;
+	return false;
+end;
+
+local function TyrantEquipSkullGuitar()
+	local plr = game.Players.LocalPlayer;
+	for _, v in pairs(plr.Backpack:GetChildren()) do
+		if v:IsA("Tool") and v.Name:lower():find("skull guitar") then
+			plr.Character.Humanoid:EquipTool(v); return true;
+		end;
+	end;
+	return false;
+end;
+
+local function GetTyrantTargetByLevel()
+	local lv = game.Players.LocalPlayer.Data.Level.Value;
+	if lv >= 2575 then
+		return {Name="Skull Slayer",   QuestArgs={"StartQuest","TikiQuest3",2},
+			QuestPos=CFrame.new(-16665.0879,105.27478,1577.61743),FarmPos=CFrame.new(-16709.49,419.68,1751.09)};
+	elseif lv > 2550 then
+		return {Name="Serpent Hunter",  QuestArgs={"StartQuest","TikiQuest3",1},
+			QuestPos=CFrame.new(-16665.0879,105.27478,1577.61743),FarmPos=CFrame.new(-16645.64,163.09,1352.87)};
+	elseif lv >= 2525 then
+		return {Name="Isle Champion",   QuestArgs={"StartQuest","TikiQuest2",2},
+			QuestPos=CFrame.new(-16546.748,55.7216759,-172.865311),FarmPos=CFrame.new(-16602.1015625,130.38734436035,1087.2456054688)};
+	elseif lv >= 2500 then
+		return {Name="Sun-kissed Warrior",QuestArgs={"StartQuest","TikiQuest2",1},
+			QuestPos=CFrame.new(-16546.748,55.7216759,-172.865311),FarmPos=CFrame.new(-16347,64,984)};
+	elseif lv >= 2475 then
+		return {Name="Island Boy",      QuestArgs={"StartQuest","TikiQuest1",2},
+			QuestPos=CFrame.new(-16546.748,55.7216759,-172.865311),FarmPos=CFrame.new(-16670,43,-270)};
+	else
+		return {Name="Isle Outlaw",     QuestArgs={"StartQuest","TikiQuest1",1},
+			QuestPos=CFrame.new(-16546.748,55.7216759,-172.865311),FarmPos=CFrame.new(-16350,45,-180)};
+	end;
+end;
+
+local function GetTyrantEyesCount()
+	local model = workspace:FindFirstChild("Map")
+		and workspace.Map:FindFirstChild("TikiOutpost")
+		and workspace.Map.TikiOutpost:FindFirstChild("IslandModel");
+	local count = 0;
+	if model then
+		local chunks = model:FindFirstChild("IslandChunks");
+		local eye3 = chunks and chunks:FindFirstChild("E") and chunks.E:FindFirstChild("Eye3");
+		local eye4 = chunks and chunks:FindFirstChild("E") and chunks.E:FindFirstChild("Eye4");
+		if model:FindFirstChild("Eye1") and model.Eye1.Transparency==0 then count+=1; end;
+		if model:FindFirstChild("Eye2") and model.Eye2.Transparency==0 then count+=1; end;
+		if eye3 and eye3.Transparency==0 then count+=1; end;
+		if eye4 and eye4.Transparency==0 then count+=1; end;
+	end;
+	return count;
+end;
+
+local function TyrantUseSkills()
+	local VIM = game:GetService("VirtualInputManager");
+	local VU  = game:GetService("VirtualUser");
+	local categories = {"Melee","Blox Fruit","Sword","Gun"};
+	local skills = {"Z","X","C"};
+	pcall(function()
+		VIM:SendKeyEvent(true,"RightControl",false,game);
+		workspace.CurrentCamera.CFrame = CFrame.new(
+			workspace.CurrentCamera.CFrame.Position,
+			workspace.CurrentCamera.CFrame.Position + Vector3.new(0,-1,0)
+		);
+	end);
+	for _, toolType in ipairs(categories) do
+		local tool = nil;
+		for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+			if v:IsA("Tool") and v.ToolTip == toolType then tool = v; break; end;
+		end;
+		if not tool then
+			local charTool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool");
+			if charTool and charTool.ToolTip == toolType then tool = charTool; end;
+		end;
+		if tool then
+			game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool);
+			task.wait(0.1);
+			for i = 1, 3 do
+				VU:CaptureController();
+				VU:ClickButton1(Vector2.new(851,158));
+				local sk = skills[i];
+				if sk then
+					VIM:SendKeyEvent(true,sk,false,game);
+					task.wait(0.05);
+					VIM:SendKeyEvent(false,sk,false,game);
+				end;
+				task.wait(0.1);
+			end;
+		end;
+	end;
+end;
+
+local TyrantVaseIndex = 1;
+local _TYRANT_DODGE_OFFSETS = {
+	CFrame.new( 12,  4,  0),
+	CFrame.new(-12,  4,  0),
+	CFrame.new(  0,  4, 12),
+	CFrame.new(  0,  4,-12),
+	CFrame.new(  8,  4,  8),
+	CFrame.new( -8,  4,  8),
+	CFrame.new(  8,  4, -8),
+	CFrame.new( -8,  4, -8),
+};
+local _tyrantDodgeIdx = 1;
+local _tyrantLastDodgeTime = 0;
+local _TYRANT_DODGE_INTERVAL = 0.35;
+
+task.spawn(function()
+	while task.wait(0.05) do
+		if not (_G.EclipseAutoTyrant and _G.EclipseStartFarm) then continue; end;
+		pcall(function()
+			local plr  = game.Players.LocalPlayer;
+			local boss = workspace.Enemies:FindFirstChild("Tyrant of the Skies");
+			local eyes = GetTyrantEyesCount();
+			if boss and boss:FindFirstChild("Humanoid") and boss.Humanoid.Health > 0 then
+				EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+				AutoHaki();
+				local plrChar = plr.Character;
+				if not plrChar then return; end;
+				local plrHum  = plrChar:FindFirstChildOfClass("Humanoid");
+				local plrHRP  = plrChar:FindFirstChild("HumanoidRootPart");
+				if not plrHum or not plrHRP then return; end;
+				local bossHRP = boss:FindFirstChild("HumanoidRootPart");
+				if not bossHRP then return; end;
+				if plrHum.Health <= 4000 then
+					local highPos = bossHRP.Position + Vector3.new(0, 1200, 0);
+					plrHRP.Anchored = true;
+					plrHRP.CFrame = CFrame.new(highPos);
+					local t = 0;
+					repeat
+						task.wait(0.5); t = t + 0.5;
+						plrChar = plr.Character;
+						plrHum  = plrChar and plrChar:FindFirstChildOfClass("Humanoid");
+						if plrHRP and plrHRP.Parent then plrHRP.CFrame = CFrame.new(highPos); end;
+					until (not _G.EclipseAutoTyrant) or (plrHum and plrHum.Health >= 10000) or t > 40;
+					if plrHRP and plrHRP.Parent then plrHRP.Anchored = false; end;
+					return;
+				end;
+				local now = tick();
+				if now - _tyrantLastDodgeTime >= _TYRANT_DODGE_INTERVAL then
+					_tyrantLastDodgeTime = now;
+					_tyrantDodgeIdx = (_tyrantDodgeIdx % #_TYRANT_DODGE_OFFSETS) + 1;
+					local dodgeCF = bossHRP.CFrame * _TYRANT_DODGE_OFFSETS[_tyrantDodgeIdx];
+					plrHRP.CFrame = dodgeCF;
+				end;
+				boss.HumanoidRootPart.Size = Vector3.new(1,1,1);
+				G.Kill(boss, true);
+			elseif eyes == 4 then
+				local vasePOS = {
+					CFrame.new(-16335.1,158.1,1465.6), CFrame.new(-16288.6,158.1,1470.3),
+					CFrame.new(-16258.0,156.7,1461.4), CFrame.new(-16212.4,158.1,1466.3),
+					CFrame.new(-16335.0,159.3,1324.8), CFrame.new(-16286.0,155.9,1323.8),
+					CFrame.new(-16250.3,159.3,1316.3)
+				};
+				local pos = vasePOS[TyrantVaseIndex];
+				if pos then
+					local plrChar = plr.Character;
+					local plrHRP  = plrChar and plrChar:FindFirstChild("HumanoidRootPart");
+					if not plrHRP then return; end;
+					plrHRP.CFrame = pos;
+					task.wait(0.05);
+					if (plrHRP.Position - pos.Position).Magnitude < 15 then
+						plrHRP.Anchored = true;
+						local VIM2 = game:GetService("VirtualInputManager");
+						local _vSkills = {"Z","X","C","V","F"};
+						for _si = 1, 10 do
+							local sk = _vSkills[math.random(1,#_vSkills)];
+							pcall(function()
+								VIM2:SendKeyEvent(true,  sk, false, game);
+								task.wait(0.04);
+								VIM2:SendKeyEvent(false, sk, false, game);
+							end);
+							task.wait(0.06);
+						end;
+						task.wait(0.1);
+						plrHRP.Anchored = false;
+						TyrantVaseIndex = TyrantVaseIndex + 1;
+						if TyrantVaseIndex > #vasePOS then TyrantVaseIndex = 1; end;
+					end;
+				end;
+			else
+				local TargetData = GetTyrantTargetByLevel();
+				local hasQuest = pcall(function() return plr.PlayerGui.Main.Quest.Visible; end);
+				local questVisible = false;
+				pcall(function() questVisible = plr.PlayerGui.Main.Quest.Visible; end);
+				if _G.EclipseAcceptQuest and not questVisible then
+					local char = plr.Character;
+					local hrp  = char and char:FindFirstChild("HumanoidRootPart");
+					if hrp then
+						local distToNPC = (hrp.Position - TargetData.QuestPos.Position).Magnitude;
+						if distToNPC <= 3 then
+							hrp.CFrame = TargetData.QuestPos;
+							task.wait(0.1);
+							pcall(function()
+								game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(
+									unpack(TargetData.QuestArgs)
+								);
+							end);
+							task.wait(0.5);
+						else
+							TweenPlayer(TargetData.QuestPos);
+						end;
+					end;
+				else
+					local char = plr.Character or plr.CharacterAdded:Wait();
+					local hrp  = char:WaitForChild("HumanoidRootPart",1);
+					if hrp then
+						local AllTikiMobs = {
+							"Skull Slayer","Serpent Hunter","Isle Champion",
+							"Sun-kissed Warrior","Island Boy","Isle Outlaw"
+						};
+						local closestEnemy, shortestDist = nil, math.huge;
+						for _, v in pairs(workspace.Enemies:GetChildren()) do
+							if table.find(AllTikiMobs, v.Name) and v:FindFirstChild("Humanoid")
+							   and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") then
+								local d = (hrp.Position - v.HumanoidRootPart.Position).Magnitude;
+								if d < shortestDist then shortestDist = d; closestEnemy = v; end;
+							end;
+						end;
+						if closestEnemy then
+							TweenPlayer(closestEnemy.HumanoidRootPart.CFrame * CFrame.new(0, FARM_HEIGHT, 0));
+							EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+							G.Kill(closestEnemy, true);
+						else
+							TweenPlayer(TargetData.FarmPos);
+						end;
+					end;
+				end;
+			end;
+		end);
+	end;
+end);
+
+
+MasteryFarmSection = MainTab:AddSection("Mastery Farm");
+if World3 then
+	MasteryMethodList = {
+		"Quest",
+		"No Quest",
+		"Nearest",
+		"Cakeprince",
+		"Bones"
+	};
+elseif World2 or World1 then
+	MasteryMethodList = {
+		"Quest",
+		"No Quest",
+		"Nearest"
+	};
+end;
+MasteryMethodDropdown = MainTab:AddDropdown({
+	Title = "Choose Mastery Method",
+	Values = MasteryMethodList,
+	Value = _G.Settings.Main["Mastery Method"],
+	Callback = function(option)
+		_G.Settings.Main["Mastery Method"] = option;
+		(getgenv()).SaveSetting();
 	end
-end)
-end
+});
+AutoFruitMasteryToggle = MainTab:AddToggle({
+	Title = "Auto Fruit Mastery",
+	Value = _G.Settings.Main["Auto Farm Fruit Mastery"],
+	Callback = function(state)
+		_G.Settings.Main["Auto Farm Fruit Mastery"] = state;
+		StopTween(_G.Settings.Main["Auto Farm Fruit Mastery"]);
+		(getgenv()).SaveSetting();
+	end
+});
+AutoGunMasteryToggle = MainTab:AddToggle({
+	Title = "Auto Gun Mastery",
+	Value = _G.Settings.Main["Auto Farm Gun Mastery"],
+	Callback = function(state)
+		_G.Settings.Main["Auto Farm Gun Mastery"] = state;
+		StopTween(_G.Settings.Main["Auto Farm Gun Mastery"]);
+		(getgenv()).SaveSetting();
+	end
+});
+local SwordList = {};
+local Inventory = (game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("getInventory");
+for i, v in pairs(Inventory) do
+	if v.Type == "Sword" then
+		table.insert(SwordList, v.Name);
+	end;
+end;
+ChooseSwordDropdown = MainTab:AddDropdown({
+	Title = "Choose Sword",
+	Values = SwordList,
+	Value = _G.Settings.Main["Selected Mastery Sword"],
+	Callback = function(option)
+		_G.Settings.Main["Selected Mastery Sword"] = option;
+		(getgenv()).SaveSetting();
+	end
+});
+function getInfoSword(SwordName)
+	if game.Players.LocalPlayer.Character:FindFirstChild(SwordName) then
+		return true;
+	elseif game.Players.LocalPlayer.Backpack:FindFirstChild(SwordName) then
+		return true;
+	end;
+	return false;
+end;
+task.spawn(function()
+	while task.wait() do
+		pcall(function()
+			if _G.Settings.Main["Auto Farm Sword Mastery"] then
+				if not getInfoSword(_G.Settings.Main["Selected Mastery Sword"]) then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("LoadItem", _G.Settings.Main["Selected Mastery Sword"]);
+				end;
+			end;
+		end);
+	end;
+end);
+AutoSwordMasteryToggle = MainTab:AddToggle({
+	Title = "Auto Sword Mastery",
+	Value = _G.Settings.Main["Auto Farm Sword Mastery"],
+	Callback = function(state)
+		_G.Settings.Main["Auto Farm Sword Mastery"] = state;
+		StopTween(_G.Settings.Main["Auto Farm Sword Mastery"]);
+		(getgenv()).SaveSetting();
+	end
+});
+task.spawn(function()
+	while task.wait(0.2) do
+		if _G.Settings.Main["Auto Farm Sword Mastery"] and _G.Settings.Main["Mastery Method"] == "Quest" then
+			pcall(function()
+				CheckQuest();
+				if not string.find((game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("AbandonQuest");
+					TweenPlayer(CFrameQuest);
+					if (CFrameQuest.Position - (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
+						(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest);
+					end;
+				elseif string.find((game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+					if game.Workspace.Enemies:FindFirstChild(Mon) then
+						for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+								if v.Name == Mon then
+									repeat
+										task.wait(0.15);
+										EquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+										Attack();
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+										AutoHaki();
+										v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+										v.HumanoidRootPart.Transparency = 1;
+										v.Humanoid.JumpPower = 0;
+										v.Humanoid.WalkSpeed = 0;
+										PosMon = v.HumanoidRootPart.CFrame;
+										MonFarm = v.Name;
+									until not _G.Settings.Main["Auto Farm Sword Mastery"] or (not v.Parent) or v.Humanoid.Health == 0 or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "Quest";
+								end;
+							end;
+						end;
+					else
+						TweenPlayer(CFrameMon);
+						UnEquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Sword Mastery"] and _G.Settings.Main["Mastery Method"] == "No Quest" then
+			pcall(function()
+				CheckQuest();
+				TweenPlayer(CFrameMon);
+				if game.Workspace.Enemies:FindFirstChild(Mon) then
+					for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+						if v.Name == Mon and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+							repeat
+								task.wait(0.15);
+								EquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+								Attack();
+								TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+								AutoHaki();
+								v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+								v.HumanoidRootPart.Transparency = 1;
+								v.Humanoid.JumpPower = 0;
+								v.Humanoid.WalkSpeed = 0;
+								PosMon = v.HumanoidRootPart.CFrame;
+								MonFarm = v.Name;
+							until not _G.Settings.Main["Auto Farm Sword Mastery"] or (not v.Parent) or v.Humanoid.Health == 0 or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "No Quest";
+						end;
+					end;
+				else
+					UnEquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+					TweenPlayer(CFrameMon);
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Sword Mastery"] and _G.Settings.Main["Mastery Method"] == "Bones" then
+			pcall(function()
+				TweenPlayer(QuestBonePos);
+				if (game:GetService("Workspace")).Enemies:FindFirstChild("Reborn Skeleton") or (game:GetService("Workspace")).Enemies:FindFirstChild("Living Zombie") or (game:GetService("Workspace")).Enemies:FindFirstChild("Demonic Soul") or (game:GetService("Workspace")).Enemies:FindFirstChild("Posessed Mummy") then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == "Reborn Skeleton" or v.Name == "Living Zombie" or v.Name == "Demonic Soul" or v.Name == "Posessed Mummy" then
+							if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									EquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+									Attack();
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									AutoHaki();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+								until not _G.Settings.Main["Auto Farm Sword Mastery"] or v.Humanoid.Health <= 0 or (not v.Parent) or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "Bones";
+							end;
+						elseif (game:GetService("ReplicatedStorage")):FindFirstChild("Demonic Soul") then
+							TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Sword Mastery"] and _G.Settings.Main["Mastery Method"] == "Cakeprince" then
+			pcall(function()
+				local PosCake = CFrame.new(-2091.911865234375, 70.00884246826172, -12142.8359375);
+				TweenPlayer(PosCake);
+				if (game:GetService("Workspace")).Enemies:FindFirstChild("Cookie Crafter") or (game:GetService("Workspace")).Enemies:FindFirstChild("Cake Guard") or (game:GetService("Workspace")).Enemies:FindFirstChild("Baking Staff") or (game:GetService("Workspace")).Enemies:FindFirstChild("Head Baker") then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == "Cookie Crafter" or v.Name == "Cake Guard" or v.Name == "Baking Staff" or v.Name == "Head Baker" then
+							if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									EquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+									Attack();
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									AutoHaki();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+								until not _G.Settings.Main["Auto Farm Sword Mastery"] or v.Humanoid.Health <= 0 or (not v.Parent) or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "Cakeprince";
+							end;
+						elseif (game:GetService("ReplicatedStorage")):FindFirstChild("Baking Staff") then
+							TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Sword Mastery"] and _G.Settings.Main["Mastery Method"] == "Nearest" then
+			pcall(function()
+				for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+					if v.Name and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+						if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - (v:FindFirstChild("HumanoidRootPart")).Position).Magnitude <= 2000 then
+							repeat
+								task.wait(0.15);
+								EquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+								Attack();
+								TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+								AutoHaki();
+								v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+								v.HumanoidRootPart.Transparency = 1;
+								v.Humanoid.JumpPower = 0;
+								v.Humanoid.WalkSpeed = 0;
+								PosMon = v.HumanoidRootPart.CFrame;
+								MonFarm = v.Name;
+							until not _G.Settings.Main["Auto Farm Sword Mastery"] or (not v.Parent) or v.Humanoid.Health == 0 or not _G.Settings.Main["Mastery Method"] == "Nearest";
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Sword Mastery"] and _G.Settings.Main["Mastery Method"] == "Boss" then
+			if (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+				CheckBossQuest();
+				TweenPlayer(CFrameQBoss);
+				if (CFrameQBoss.Position - (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("StartQuest", NameQuestBoss, QuestLvBoss);
+				end;
+			elseif (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+				pcall(function()
+					CheckBossQuest();
+					if (game:GetService("Workspace")).Enemies:FindFirstChild(SelectBoss) then
+						for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v.Name == selectBoss and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+								repeat
+									task.wait(0.15);
+									EquipWeapon(_G.Settings.Main["Selected Mastery Sword"]);
+									Attack();
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									AutoHaki();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+								until not _G.Settings.Main["Auto Farm Sword Mastery"] or not _G.Settings.Main["Mastery Method"] == "Boss" or (not v.Parent) or v.Humanoid.Health == 0 or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name));
+							end;
+						end;
+					end;
+				end);
+			end;
+		end;
+	end;
+end);
+task.spawn(function()
+	while task.wait(0.2) do
+		if _G.Settings.Main["Auto Farm Fruit Mastery"] and _G.Settings.Main["Mastery Method"] == "Quest" then
+			pcall(function()
+				CheckQuest();
+				if not string.find((game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("AbandonQuest");
+					TweenPlayer(CFrameQuest);
+					if (CFrameQuest.Position - (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
+						(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest);
+					end;
+				elseif string.find((game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+					if game.Workspace.Enemies:FindFirstChild(Mon) then
+						for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+								if v.Name == Mon then
+									repeat
+										task.wait(0.15);
+										if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+											EquipWeapon((game:GetService("Players")).LocalPlayer.Data.DevilFruit.Value);
+											TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+											Skillaimbot = true;
+											UseSkill = true;
+										else
+											UseSkill = false;
+											Skillaimbot = false;
+											EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+											NormalAttack();
+											TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+										end;
+										AutoHaki();
+										v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+										v.HumanoidRootPart.Transparency = 1;
+										v.Humanoid.JumpPower = 0;
+										v.Humanoid.WalkSpeed = 0;
+										PosMon = v.HumanoidRootPart.CFrame;
+										MonFarm = v.Name;
+										AimBotSkillPosition = v.HumanoidRootPart.Position;
+										Skillaimbot = true;
+									until not _G.Settings.Main["Auto Farm Fruit Mastery"] or (not v.Parent) or v.Humanoid.Health == 0 or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "Quest";
+									UseSkill = false;
+									Skillaimbot = false;
+								end;
+							end;
+						end;
+					else
+						UseSkill = false;
+						TweenPlayer(CFrameMon);
+						UnEquipWeapon(SelectWeapon);
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Fruit Mastery"] and _G.Settings.Main["Mastery Method"] == "No Quest" then
+			pcall(function()
+				CheckQuest();
+				TweenPlayer(CFrameMon);
+				if game.Workspace.Enemies:FindFirstChild(Mon) then
+					for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+						if v.Name == Mon and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+							repeat
+								task.wait(0.15);
+								if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+									EquipWeapon((game:GetService("Players")).LocalPlayer.Data.DevilFruit.Value);
+									UseSkill = true;
+									Skillaimbot = true;
+									TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+								else
+									UseSkill = false;
+									Skillaimbot = false;
+									EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+									NormalAttack();
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+								end;
+								AutoHaki();
+								v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+								v.HumanoidRootPart.Transparency = 1;
+								v.Humanoid.JumpPower = 0;
+								v.Humanoid.WalkSpeed = 0;
+								PosMon = v.HumanoidRootPart.CFrame;
+								MonFarm = v.Name;
+								AimBotSkillPosition = v.HumanoidRootPart.Position;
+							until not _G.Settings.Main["Auto Farm Fruit Mastery"] or (not v.Parent) or v.Humanoid.Health == 0 or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "No Quest";
+							UseSkill = false;
+							Skillaimbot = false;
+						end;
+					end;
+				else
+					UseSkill = false;
+					UnEquipWeapon(_G.Settings.Main["Selected Weapon"]);
+					TweenPlayer(CFrameMon);
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Fruit Mastery"] and _G.Settings.Main["Mastery Method"] == "Bones" then
+			pcall(function()
+				TweenPlayer(QuestBonePos);
+				if (game:GetService("Workspace")).Enemies:FindFirstChild("Reborn Skeleton") or (game:GetService("Workspace")).Enemies:FindFirstChild("Living Zombie") or (game:GetService("Workspace")).Enemies:FindFirstChild("Demonic Soul") or (game:GetService("Workspace")).Enemies:FindFirstChild("Posessed Mummy") then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == "Reborn Skeleton" or v.Name == "Living Zombie" or v.Name == "Demonic Soul" or v.Name == "Posessed Mummy" then
+							if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+										EquipWeapon((game:GetService("Players")).LocalPlayer.Data.DevilFruit.Value);
+										UseSkill = true;
+										Skillaimbot = true;
+										TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+									else
+										UseSkill = false;
+										Skillaimbot = false;
+										EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+										NormalAttack();
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									end;
+									AutoHaki();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+									AimBotSkillPosition = v.HumanoidRootPart.Position;
+								until not _G.Settings.Main["Auto Farm Fruit Mastery"] or v.Humanoid.Health <= 0 or (not v.Parent) or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "Bones";
+								UseSkill = false;
+								Skillaimbot = false;
+							end;
+						elseif (game:GetService("ReplicatedStorage")):FindFirstChild("Demonic Soul") then
+							TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Fruit Mastery"] and _G.Settings.Main["Mastery Method"] == "Cakeprince" then
+			pcall(function()
+				local PosCake = CFrame.new(-2091.911865234375, 70.00884246826172, -12142.8359375);
+				TweenPlayer(PosCake);
+				if (game:GetService("Workspace")).Enemies:FindFirstChild("Cookie Crafter") or (game:GetService("Workspace")).Enemies:FindFirstChild("Cake Guard") or (game:GetService("Workspace")).Enemies:FindFirstChild("Baking Staff") or (game:GetService("Workspace")).Enemies:FindFirstChild("Head Baker") then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == "Cookie Crafter" or v.Name == "Cake Guard" or v.Name == "Baking Staff" or v.Name == "Head Baker" then
+							if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+										EquipWeapon((game:GetService("Players")).LocalPlayer.Data.DevilFruit.Value);
+										UseSkill = true;
+										Skillaimbot = true;
+										TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+									else
+										UseSkill = false;
+										Skillaimbot = false;
+										EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+										NormalAttack();
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									end;
+									AutoHaki();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+									AimBotSkillPosition = v.HumanoidRootPart.Position;
+								until not _G.Settings.Main["Auto Farm Fruit Mastery"] or v.Humanoid.Health <= 0 or (not v.Parent) or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "Cakeprince";
+								UseSkill = false;
+								Skillaimbot = false;
+							end;
+						elseif (game:GetService("ReplicatedStorage")):FindFirstChild("Baking Staff") then
+							TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Fruit Mastery"] and _G.Settings.Main["Mastery Method"] == "Nearest" then
+			pcall(function()
+				for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+					if v.Name and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+						if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - (v:FindFirstChild("HumanoidRootPart")).Position).Magnitude <= 2000 then
+							repeat
+								task.wait(0.15);
+								if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+									EquipWeapon((game:GetService("Players")).LocalPlayer.Data.DevilFruit.Value);
+									TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+									Skillaimbot = true;
+									UseSkill = true;
+								else
+									Skillaimbot = false;
+									UseSkill = false;
+									EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+									NormalAttack();
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+								end;
+								AutoHaki();
+								v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+								v.HumanoidRootPart.Transparency = 1;
+								v.Humanoid.JumpPower = 0;
+								v.Humanoid.WalkSpeed = 0;
+								PosMon = v.HumanoidRootPart.CFrame;
+								MonFarm = v.Name;
+								AimBotSkillPosition = v.HumanoidRootPart.Position;
+							until not _G.Settings.Main["Auto Farm Fruit Mastery"] or (not v.Parent) or v.Humanoid.Health == 0 or not _G.Settings.Main["Mastery Method"] == "Nearest";
+							UseSkill = false;
+							Skillaimbot = false;
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Fruit Mastery"] and _G.Settings.Main["Mastery Method"] == "Boss" then
+			if (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+				CheckBossQuest();
+				TweenPlayer(CFrameQBoss);
+				if (CFrameQBoss.Position - (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("StartQuest", NameQuestBoss, QuestLvBoss);
+				end;
+			elseif (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+				pcall(function()
+					CheckBossQuest();
+					if (game:GetService("Workspace")).Enemies:FindFirstChild(SelectBoss) then
+						for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v.Name == selectBoss and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+								repeat
+									task.wait(0.15);
+									if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+										EquipWeapon((game:GetService("Players")).LocalPlayer.Data.DevilFruit.Value);
+										TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+										Skillaimbot = true;
+										UseSkill = true;
+									else
+										EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+										UseSkill = false;
+										Skillaimbot = false;
+										NormalAttack();
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									end;
+									AutoHaki();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+									AimBotSkillPosition = v.HumanoidRootPart.Position;
+								until not _G.Settings.Main["Auto Farm Fruit Mastery"] or not _G.Settings.Main["Mastery Method"] == "Boss" or (not v.Parent) or v.Humanoid.Health == 0 or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name));
+								UseSkill = false;
+								Skillaimbot = false;
+							end;
+						end;
+					else
+						UseSkill = false;
+						Skillaimbot = false;
+					end;
+				end);
+			end;
+		end;
+	end;
+end);
+task.spawn(function()
+	while task.wait(0.2) do
+		if _G.Settings.Main["Auto Farm Gun Mastery"] and _G.Settings.Main["Mastery Method"] == "Quest" then
+			pcall(function()
+				CheckQuest();
+				if not string.find((game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("AbandonQuest");
+					TweenPlayer(CFrameQuest);
+					if (CFrameQuest.Position - (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
+						(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("StartQuest", NameQuest, LevelQuest);
+					end;
+				elseif string.find((game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, NameMon) or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+					if game.Workspace.Enemies:FindFirstChild(Mon) then
+						for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+								if v.Name == Mon then
+									repeat
+										task.wait(0.15);
+										if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+											EquipWeapon(SelectWeaponGun);
+											local ShootPosition = (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, (-15), 0);
+											((game:GetService("Players")).LocalPlayer.Character.Humanoid:FindFirstChild("")):InvokeServer("TAP", Vector3.new(ShootPosition.Position));
+											TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+											UseGunSkill = true;
+											Skillaimbot = true;
+										else
+											UseGunSkill = false;
+											Skillaimbot = false;
+											EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+											TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+										end;
+										AutoHaki();
+										v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+										v.HumanoidRootPart.Transparency = 1;
+										v.Humanoid.JumpPower = 0;
+										v.Humanoid.WalkSpeed = 0;
+										NormalAttack();
+										PosMon = v.HumanoidRootPart.CFrame;
+										MonFarm = v.Name;
+										AimBotSkillPosition = v.HumanoidRootPart.Position;
+									until not _G.Settings.Main["Auto Farm Gun Mastery"] or (not v.Parent) or v.Humanoid.Health <= 0 or (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "Quest";
+									UseGunSkill = false;
+									Skillaimbot = false;
+								end;
+							end;
+						end;
+					else
+						UseGunSkill = false;
+						Skillaimbot = false;
+						TweenPlayer(CFrameMon);
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Gun Mastery"] and _G.Settings.Main["Mastery Method"] == "No Quest" then
+			pcall(function()
+				CheckQuest();
+				TweenPlayer(CFrameMon);
+				if game.Workspace.Enemies:FindFirstChild(Mon) then
+					for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+						if v.Name == Mon and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+							repeat
+								task.wait(0.15);
+								if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+									local ShootPosition = (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, (-15), 0);
+									((game:GetService("Players")).LocalPlayer.Character.Humanoid:FindFirstChild("")):InvokeServer("TAP", Vector3.new(ShootPosition.Position));
+									EquipWeapon(SelectWeaponGun);
+									TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+									UseGunSkill = true;
+									Skillaimbot = true;
+								else
+									Skillaimbot = false;
+									UseGunSkill = false;
+									EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+								end;
+								AutoHaki();
+								v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+								v.HumanoidRootPart.Transparency = 1;
+								v.Humanoid.JumpPower = 0;
+								v.Humanoid.WalkSpeed = 0;
+								PosMon = v.HumanoidRootPart.CFrame;
+								MonFarm = v.Name;
+								NormalAttack();
+								AimBotSkillPosition = v.HumanoidRootPart.Position;
+							until not _G.Settings.Main["Auto Farm Gun Mastery"] or (not v.Parent) or v.Humanoid.Health <= 0 or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name)) or not _G.Settings.Main["Mastery Method"] == "No Quest";
+						end;
+					end;
+				else
+					UseGunSkill = false;
+					Skillaimbot = false;
+					UnEquipWeapon(_G.Settings.Main["Selected Weapon"]);
+					TweenPlayer(CFrameMon);
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Gun Mastery"] and _G.Settings.Main["Mastery Method"] == "Bones" then
+			pcall(function()
+				TweenPlayer(QuestBonePos);
+				if (game:GetService("Workspace")).Enemies:FindFirstChild("Reborn Skeleton") or (game:GetService("Workspace")).Enemies:FindFirstChild("Living Zombie") or (game:GetService("Workspace")).Enemies:FindFirstChild("Demonic Soul") or (game:GetService("Workspace")).Enemies:FindFirstChild("Posessed Mummy") then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == "Reborn Skeleton" or v.Name == "Living Zombie" or v.Name == "Demonic Soul" or v.Name == "Posessed Mummy" then
+							if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+										EquipWeapon(SelectWeaponGun);
+										local ShootPosition = (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, (-15), 0);
+										((game:GetService("Players")).LocalPlayer.Character.Humanoid:FindFirstChild("")):InvokeServer("TAP", Vector3.new(ShootPosition.Position));
+										UseGunSkill = true;
+										Skillaimbot = true;
+										TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+									else
+										UseGunSkill = false;
+										Skillaimbot = false;
+										EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									end;
+									AutoHaki();
+									NormalAttack();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+									AimBotSkillPosition = v.HumanoidRootPart.Position;
+								until not _G.Settings.Main["Auto Farm Gun Mastery"] or not _G.Settings.Main["Mastery Method"] == "Bones" or v.Humanoid.Health <= 0 or (not v.Parent);
+								UseGunSkill = false;
+								Skillaimbot = false;
+							elseif (game:GetService("ReplicatedStorage")):FindFirstChild("Demonic Soul") then
+								TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+							end;
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Gun Mastery"] and _G.Settings.Main["Mastery Method"] == "Cakeprince" then
+			pcall(function()
+				local PosCake = CFrame.new(-2091.911865234375, 70.00884246826172, -12142.8359375);
+				TweenPlayer(PosCake);
+				if (game:GetService("Workspace")).Enemies:FindFirstChild("Cookie Crafter") or (game:GetService("Workspace")).Enemies:FindFirstChild("Cake Guard") or (game:GetService("Workspace")).Enemies:FindFirstChild("Baking Staff") or (game:GetService("Workspace")).Enemies:FindFirstChild("Head Baker") then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == "Cookie Crafter" or v.Name == "Cake Guard" or v.Name == "Baking Staff" or v.Name == "Head Baker" then
+							if v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+										EquipWeapon(SelectWeaponGun);
+										local ShootPosition = (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, (-15), 0);
+										((game:GetService("Players")).LocalPlayer.Character.Humanoid:FindFirstChild("")):InvokeServer("TAP", Vector3.new(ShootPosition.Position));
+										UseGunSkill = true;
+										Skillaimbot = true;
+										TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+									else
+										UseGunSkill = false;
+										Skillaimbot = false;
+										EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									end;
+									AutoHaki();
+									NormalAttack();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+									AimBotSkillPosition = v.HumanoidRootPart.Position;
+								until not _G.Settings.Main["Auto Farm Gun Mastery"] or not _G.Settings.Main["Mastery Method"] == "Cakeprince" or v.Humanoid.Health <= 0 or (not v.Parent);
+								UseGunSkill = false;
+								Skillaimbot = false;
+							elseif (game:GetService("ReplicatedStorage")):FindFirstChild("Cake Guard") then
+								TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+							end;
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Gun Mastery"] and _G.Settings.Main["Mastery Method"] == "Nearest" then
+			pcall(function()
+				for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
+					if v.Name and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+						if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - (v:FindFirstChild("HumanoidRootPart")).Position).Magnitude <= 2000 then
+							repeat
+								task.wait(0.15);
+								if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+									EquipWeapon(SelectWeaponGun);
+									local ShootPosition = (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, (-15), 0);
+									((game:GetService("Players")).LocalPlayer.Character.Humanoid:FindFirstChild("")):InvokeServer("TAP", Vector3.new(ShootPosition.Position));
+									TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+									UseGunSkill = true;
+									Skillaimbot = true;
+								else
+									UseGunSkill = false;
+									Skillaimbot = false;
+									AutoHaki();
+									EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+								end;
+								AutoHaki();
+								v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+								v.HumanoidRootPart.Transparency = 1;
+								v.Humanoid.JumpPower = 0;
+								v.Humanoid.WalkSpeed = 0;
+								PosMon = v.HumanoidRootPart.CFrame;
+								MonFarm = v.Name;
+								NormalAttack();
+								AimBotSkillPosition = v.HumanoidRootPart.Position;
+							until not _G.Settings.Main["Auto Farm Gun Mastery"] or (not v.Parent) or v.Humanoid.Health <= 0 or not _G.Settings.Main["Mastery Method"] == "Nearest";
+							UseGunSkill = false;
+							Skillaimbot = false;
+						end;
+					end;
+				end;
+			end);
+		elseif _G.Settings.Main["Auto Farm Gun Mastery"] and _G.Settings.Main["Mastery Method"] == "Boss" then
+			if (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == false then
+				CheckBossQuest();
+				TweenPlayer(CFrameQBoss);
+				if (CFrameQBoss.Position - (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 then
+					(game:GetService("ReplicatedStorage")).Remotes.CommF_:InvokeServer("StartQuest", NameQuestBoss, QuestLvBoss);
+				end;
+			elseif (game:GetService("Players")).LocalPlayer.PlayerGui.Main.Quest.Visible == true then
+				pcall(function()
+					CheckBossQuest();
+					if (game:GetService("Workspace")).Enemies:FindFirstChild(SelectBoss) then
+						for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v.Name == selectBoss and v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") then
+								repeat
+									task.wait(0.15);
+									if v.Humanoid.Health <= v.Humanoid.MaxHealth * _G.Settings.Setting["Mastery Health"] / 100 then
+										EquipWeapon(SelectWeaponGun);
+										local ShootPosition = (game:GetService("Players")).LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, (-15), 0);
+										((game:GetService("Players")).LocalPlayer.Character.Humanoid:FindFirstChild("")):InvokeServer("TAP", Vector3.new(ShootPosition.Position));
+										TweenPlayer(v.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad((-90)), 0, 0));
+										UseGunSkill = true;
+										Skillaimbot = true;
+									else
+										UseGunSkill = false;
+										Skillaimbot = false;
+										AutoHaki();
+										EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									end;
+									AutoHaki();
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									v.HumanoidRootPart.Transparency = 1;
+									v.Humanoid.JumpPower = 0;
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+									NormalAttack();
+									AimBotSkillPosition = v.HumanoidRootPart.Position;
+								until not _G.Settings.Main["Auto Farm Gun Mastery"] or not _G.Settings.Main["Mastery Method"] == "Boss" or (not v.Parent) or v.Humanoid.Health <= 0 or game.Players.LocalPlayer.PlayerGui.Main.Quest.Visible == false or (not (game:GetService("Workspace")).Enemies:FindFirstChild(v.Name));
+								Skillaimbot = false;
+							end;
+						end;
+					else
+						UseGunSkill = false;
+						Skillaimbot = false;
+						TweenPlayer(((game:GetService("ReplicatedStorage")):FindFirstChild(SelectBoss)).HumanoidRootPart.CFrame * Pos);
+					end;
+				end);
+			end;
+		end;
+	end;
+end);
+MonFarmSection = MainTab:AddSection("Mob Farm");
+if World1 then
+	tableMon = {
+		"Bandit",
+		"Monkey",
+		"Gorilla",
+		"Pirate",
+		"Brute",
+		"Desert Bandit",
+		"Desert Officer",
+		"Snow Bandit",
+		"Snowman",
+		"Chief Petty Officer",
+		"Sky Bandit",
+		"Dark Master",
+		"Toga Warrior",
+		"Gladiator",
+		"Military Soldier",
+		"Military Spy",
+		"Fishman Warrior",
+		"Fishman Commando",
+		"God's Guard",
+		"Shanda",
+		"Royal Squad",
+		"Royal Soldier",
+		"Galley Pirate",
+		"Galley Captain"
+	};
+elseif World2 then
+	tableMon = {
+		"Raider",
+		"Mercenary",
+		"Swan Pirate",
+		"Factory Staff",
+		"Marine Lieutenant",
+		"Marine Captain",
+		"Zombie",
+		"Vampire",
+		"Snow Trooper",
+		"Winter Warrior",
+		"Lab Subordinate",
+		"Horned Warrior",
+		"Magma Ninja",
+		"Lava Pirate",
+		"Ship Deckhand",
+		"Ship Engineer",
+		"Ship Steward",
+		"Ship Officer",
+		"Arctic Warrior",
+		"Snow Lurker",
+		"Sea Soldier",
+		"Water Fighter"
+	};
+elseif World3 then
+	tableMon = {
+		"Pirate Millionaire",
+		"Dragon Crew Warrior",
+		"Dragon Crew Archer",
+		"Female Islander",
+		"Giant Islander",
+		"Marine Commodore",
+		"Marine Rear Admiral",
+		"Fishman Raider",
+		"Fishman Captain",
+		"Forest Pirate",
+		"Mythological Pirate",
+		"Jungle Pirate",
+		"Musketeer Pirate",
+		"Reborn Skeleton",
+		"Living Zombie",
+		"Demonic Soul",
+		"Posessed Mummy",
+		"Peanut Scout",
+		"Peanut President",
+		"Ice Cream Chef",
+		"Ice Cream Commander",
+		"Cookie Crafter",
+		"Cake Guard",
+		"Baking Staff",
+		"Head Baker",
+		"Cocoa Warrior",
+		"Chocolate Bar Battler",
+		"Sweet Thief",
+		"Candy Rebel",
+		"Candy Pirate",
+		"Snow Demon",
+		"Isle Outlaw",
+		"Island Boy",
+		"Sun-kissed Warrior",
+		"Isle Champion"
+	};
+end;
+ChooseMonDropdown = MainTab:AddDropdown({
+	Title = "Choose Mob",
+	Values = tableMon,
+	Value = _G.Settings.Main["Selected Mon"],
+	Callback = function(option)
+		_G.Settings.Main["Selected Mon"] = option;
+		(getgenv()).SaveSetting();
+	end
+});
+AutoMonFarmToggle = MainTab:AddToggle({
+	Title = "Auto Farm Mob",
+	Desc = "Auto Kill Mob When Spawn",
+	Value = _G.Settings.Main["Auto Farm Mon"],
+	Callback = function(state)
+		_G.Settings.Main["Auto Farm Mon"] = state;
+		StopTween(_G.Settings.Main["Auto Farm Mon"]);
+		(getgenv()).SaveSetting();
+	end
+});
+task.spawn(function()
+	while task.wait(0.2) do
+		if _G.Settings.Main["Auto Farm Mon"] then
+			pcall(function()
+				if (game:GetService("Workspace")).Enemies:FindFirstChild(_G.Settings.Main["Selected Mon"]) then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == _G.Settings.Main["Selected Mon"] then
+							if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									AutoHaki();
+									EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+									v.Humanoid.WalkSpeed = 0;
+									PosMon = v.HumanoidRootPart.CFrame;
+									MonFarm = v.Name;
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									Attack();
+								until not _G.Settings.Main["Auto Farm Mon"] or (not v.Parent) or v.Humanoid.Health <= 0;
+							end;
+						end;
+					end;
+				end;
+			end);
+		end;
+	end;
+end);
+BossSection = FarmingHopTab:AddSection(" Boss Farm");
+BossStatusParagraph = FarmingHopTab:AddParagraph({
+	Title = "Boss Status",
+	Desc = "N/A"
+});
+task.spawn(function()
+	while task.wait(0.2) do
+		pcall(function()
+			if (game:GetService("ReplicatedStorage")):FindFirstChild(_G.Settings.Main["Selected Boss"]) or (game:GetService("Workspace")).Enemies:FindFirstChild(_G.Settings.Main["Selected Boss"]) then
+				BossStatusParagraph:SetDesc("Spawn!");
+			else
+				BossStatusParagraph:SetDesc("Not Spawn");
+			end;
+		end);
+	end;
+end);
+if World1 then
+	tableBoss = {
+		"The Gorilla King",
+		"Bobby",
+		"Yeti",
+		"Mob Leader",
+		"Vice Admiral",
+		"Warden",
+		"Chief Warden",
+		"Swan",
+		"Magma Admiral",
+		"Fishman Lord",
+		"Wysper",
+		"Thunder God",
+		"Cyborg",
+		"Saber Expert"
+	};
+elseif World2 then
+	tableBoss = {
+		"Diamond",
+		"Jeremy",
+		"Fajita",
+		"Don Swan",
+		"Smoke Admiral",
+		"Cursed Captain",
+		"Darkbeard",
+		"Order",
+		"Awakened Ice Admiral",
+		"Tide Keeper"
+	};
+elseif World3 then
+	tableBoss = {
+		"Stone",
+		"Island Empress",
+		"Kilo Admiral",
+		"Captain Elephant",
+		"Beautiful Pirate",
+		"rip_indra True Form",
+		"Longma",
+		"Soul Reaper",
+		"Cake Queen"
+	};
+end;
+ChooseBossDropdown = FarmingHopTab:AddDropdown({
+	Title = "Choose Boss",
+	Values = tableBoss,
+	Value = _G.Settings.Main["Selected Boss"],
+	Callback = function(option)
+		_G.Settings.Main["Selected Boss"] = option;
+		(getgenv()).SaveSetting();
+	end
+});
+AutoFarmBossToggle = FarmingHopTab:AddToggle({
+	Title = "Auto Farm Boss",
+	Desc = "Auto Kill Boss When Spawn",
+	Value = _G.Settings.Main["Auto Farm Boss"],
+	Callback = function(state)
+		_G.Settings.Main["Auto Farm Boss"] = state;
+		StopTween(_G.Settings.Main["Auto Farm Boss"]);
+		(getgenv()).SaveSetting();
+	end
+});
+task.spawn(function()
+	while task.wait(0.2) do
+		if _G.Settings.Main["Auto Farm Boss"] then
+			pcall(function()
+				if (game:GetService("Workspace")).Enemies:FindFirstChild(_G.Settings.Main["Selected Boss"]) then
+					for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+						if v.Name == _G.Settings.Main["Selected Boss"] then
+							if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+								repeat
+									task.wait(0.15);
+									AutoHaki();
+									EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+									v.Humanoid.WalkSpeed = 0;
+									v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+									TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+									Attack();
+								until not _G.Settings.Main["Auto Farm Boss"] or (not v.Parent) or v.Humanoid.Health <= 0;
+							end;
+						end;
+					end;
+				elseif (game:GetService("ReplicatedStorage")):FindFirstChild(_G.Settings.Main["Selected Boss"]) then
+					TweenPlayer(((game:GetService("ReplicatedStorage")):FindFirstChild(_G.Settings.Main["Selected Boss"])).HumanoidRootPart.CFrame * CFrame.new(5, 10, 2));
+				end;
+			end);
+		end;
+	end;
+end);
+AutoFarmAllBossToggle = FarmingHopTab:AddToggle({
+	Title = "Auto Farm All Boss",
+	Value = _G.Settings.Main["Auto Farm All Boss"],
+	Callback = function(state)
+		_G.Settings.Main["Auto Farm All Boss"] = state;
+		StopTween(_G.Settings.Main["Auto Farm All Boss"]);
+		(getgenv()).SaveSetting();
+	end
+});
+task.spawn(function()
+	while task.wait(0.2) do
+		if _G.Settings.Main["Auto Farm All Boss"] then
+			pcall(function()
+				for i, boss in pairs(tableBoss) do
+					if (game:GetService("Workspace")).Enemies:FindFirstChild(boss) then
+						for i, v in pairs((game:GetService("Workspace")).Enemies:GetChildren()) do
+							if v.Name == boss then
+								if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+									repeat
+										task.wait(0.15);
+										AutoHaki();
+										EquipWeapon(_G.Settings.Main["Selected Weapon"]);
+										v.Humanoid.WalkSpeed = 0;
+										v.HumanoidRootPart.Size = Vector3.new(1, 1, 1);
+										TweenPlayer(v.HumanoidRootPart.CFrame * Pos);
+										Attack();
+									until not _G.Settings.Main["Auto Farm All Boss"] or (not v.Parent) or v.Humanoid.Health <= 0;
+								end;
+							end;
+						end;
+					elseif (game:GetService("ReplicatedStorage")):FindFirstChild(boss) then
+						TweenPlayer(((game:GetService("ReplicatedStorage")):FindFirstChild(boss)).HumanoidRootPart.CFrame * CFrame.new(5, 10, 2));
+					end;
+				end;
+			end);
+		end;
+	end;
+end);
 
 
 -- ===================== FARM OTHERS TAB =====================
@@ -6345,6 +8077,7 @@ task.spawn(function()
 	end;
 end);
 
+FarmTab:AddToggle({
 	Title = "Chest Hop",
 	Desc = "Troca de servidor apos pegar X baus (define quantidade abaixo)",
 	Value = false,
